@@ -16,7 +16,7 @@ public class AOCRunner
 
 	private void FindProblemClasses()
 	{
-		var types = Assembly.GetExecutingAssembly().DefinedTypes.Where(t => t.IsAssignableTo(typeof(IProblemBase)) && !t.IsInterface);
+		var types = Assembly.GetExecutingAssembly().DefinedTypes.Where(t => t.IsAssignableTo(typeof(IProblem)) && !t.IsInterface);
 		if (types == null)
 			return;
 		foreach (var type in types)

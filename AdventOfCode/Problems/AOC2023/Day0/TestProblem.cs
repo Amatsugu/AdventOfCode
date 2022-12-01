@@ -3,7 +3,7 @@ using AdventOfCode.Runner.Attributes;
 
 namespace AdventOfCode.Problems.AOC2023.Day0;
 [ProblemInfo("2023", 0, "Test")]
-public class TestProblem : IProblemBase
+public class TestProblem : IProblem
 {
 	public void LoadInput()
 	{

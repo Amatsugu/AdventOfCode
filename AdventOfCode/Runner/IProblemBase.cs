@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace AdventOfCode.Runner;
-public interface IProblemBase
+public interface IProblem
 {
 	void LoadInput();
 
