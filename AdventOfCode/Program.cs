@@ -8,7 +8,7 @@ internal class Program
 	static void Main(string[] args)
 	{
 		var runner = new AOCRunner();
-		//runner.RenderMenu();
+		runner.RenderMenu();
 		var cc = new CalorieCounting();
 		cc.LoadInput();
 		cc.CalculatePart1();

@@ -24,11 +24,13 @@ public class AOCRunner
 			var info = type.GetCustomAttribute<ProblemInfoAttribute>();
 			if (info == null)
 				continue;
-			if (_loadedProblems.ContainsKey(info.Year))
-				_loadedProblems[info.Year].Add((info, type));
+			if (_loadedProblems.TryGetValue(info.Year, out var list))
+				list.Add((info, type));
 			else
 				_loadedProblems.Add(info.Year, new() { (info, type) });
 		}
+		foreach (var (year, list) in _loadedProblems)
+			_loadedProblems[year] = list.OrderBy(l => l.info.Day).ToList();
 	}
 
 	public void RenderMenu()
@@ -37,16 +39,19 @@ public class AOCRunner
 
 		Console.WriteLine("Available Problems:");
 		foreach (var year in years)
+			RenderYearMenu(year);	
+	}
+
+	private void RenderYearMenu(string year)
+	{
+		Console.ForegroundColor = ConsoleColor.Red;
+		Console.WriteLine($"{year}:");
+		Console.ForegroundColor = ConsoleColor.Gray;
+		var days = _loadedProblems[year];
+		for (int i = 0; i < days.Count; i++)
 		{
-			Console.ForegroundColor = ConsoleColor.Red;
-			Console.WriteLine($"{year}:");
-			Console.ForegroundColor = ConsoleColor.Gray;
-			var days = _loadedProblems[year];
-			for (int i = 0; i < days.Count; i++)
-			{
-				var day = days[i];
-				Console.WriteLine($"\tDay {day.info.Day} - {day.info.Name}");
-			}
+			var (info, type) = days[i];
+			Console.WriteLine($"\tDay {info.Day} - {info.Name}");
 		}
 	}
 }
