@@ -1,4 +1,5 @@
 ﻿using AdventOfCode.Problems.AOC2022.Day1;
+using AdventOfCode.Problems.AOC2022.Day2;
 using AdventOfCode.Runner;
 
 namespace AdventOfCode;
@@ -9,7 +10,7 @@ internal class Program
 	{
 		var runner = new AOCRunner();
 		runner.RenderMenu();
-		var cc = new CalorieCounting();
+		var cc = new RockPaperScissors();
 		cc.LoadInput();
 		cc.CalculatePart1();
 		cc.PrintPart1();

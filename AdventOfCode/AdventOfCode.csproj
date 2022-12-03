@@ -9,11 +9,19 @@
 
   <ItemGroup>
     <None Remove="Problems\AOC2022\Day1\input.txt" />
+    <None Remove="Problems\AOC2022\Day2\input.txt" />
+    <None Remove="Problems\AOC2022\Day2\test.txt" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Problems\AOC2022\Day1\input.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Problems\AOC2022\Day2\input.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Problems\AOC2022\Day2\test.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
 
