@@ -2,17 +2,50 @@
 
 using System.Diagnostics;
 using System.Reflection;
+using System.Text;
 
 namespace AdventOfCode.Runner;
 
 public class AOCRunner
 {
 	private Dictionary<string, List<(ProblemInfoAttribute info, Type type)>> _loadedProblems;
+	private List<string> _years;
+	private string _selectedYear;
+	private int _selectedDay;
+	private int _scollOffset = 0;
+	private int _maxProblemCount;
+
+	private bool _isProblemMode = false;
 
 	public AOCRunner()
 	{
+		Console.OutputEncoding = Encoding.UTF8;
 		_loadedProblems = new();
+		_years = new List<string>();
+		_selectedYear = DateTime.Now.Year.ToString();
 		FindProblemClasses();
+
+		InitSizing();
+		if(_years.Count > 0)
+		{
+			_selectedDay = _loadedProblems[_selectedYear].Count - 1;
+			ConstrainListScroll();	
+		}
+	}
+
+	private void InitSizing() {
+		_maxProblemCount = Console.WindowHeight - 9;
+	}
+
+	private void ConstrainListScroll()
+	{
+		if (_selectedDay >= _maxProblemCount )
+		{
+			_scollOffset = _loadedProblems[_selectedYear].Count - _maxProblemCount;
+		} if(_selectedDay < _scollOffset)
+		{
+			_scollOffset = _selectedDay;
+		}
 	}
 
 	private void FindProblemClasses()
@@ -32,81 +65,7 @@ public class AOCRunner
 		}
 		foreach (var (year, list) in _loadedProblems)
 			_loadedProblems[year] = list.OrderBy(l => l.info.Day).ToList();
-	}
-
-	public void RenderMenu()
-	{
-
-		var defaultYear = DateTime.Now.Year.ToString();
-
-		RenderYears(defaultYear);
-
-		Console.Write("Select a Year: ");
-		Console.ForegroundColor = ConsoleColor.Red;
-		Console.WriteLine($"(blank is {defaultYear})");
-		Console.ForegroundColor = ConsoleColor.Gray;
-		var inputYear = Console.ReadLine();
-		if (string.IsNullOrWhiteSpace(inputYear))
-			inputYear = defaultYear;
-
-		RenderYearMenu(inputYear);
-	}
-
-	private void RenderYears(string defaultYear)
-	{
-		var years = _loadedProblems.Keys.OrderByDescending(k => k);
-
-		foreach (var year in years)
-		{
-			Console.ForegroundColor = ConsoleColor.Red;
-			if (defaultYear == year)
-				Console.Write("\t> ");
-			else
-				Console.Write("\t  ");
-
-			Console.Write($"{year} ");
-			Console.ForegroundColor = ConsoleColor.Gray;
-			Console.WriteLine($"- {_loadedProblems[year].Count} Problems");
-		}
-	}
-
-	private void RenderYearMenu(string year)
-	{
-		if(!_loadedProblems.ContainsKey(year))
-		{
-			Console.WriteLine($"No problems for {year} exist");
-			return;
-		}
-		var defaultDay = DateTime.Now.Day;
-		Console.ForegroundColor = ConsoleColor.Red;
-		Console.WriteLine($"{year}:");
-		Console.ForegroundColor = ConsoleColor.Gray;
-		var days = _loadedProblems[year];
-		for (int i = 0; i < days.Count; i++)
-		{
-			var (info, _) = days[i];
-			Console.ForegroundColor = ConsoleColor.Magenta;
-			if(i == defaultDay)
-				Console.Write($"\t> [{i}]");
-			else
-				Console.Write($"\t  [{i}]");
-			Console.ForegroundColor = ConsoleColor.Gray;
-			Console.WriteLine($" - Day {info.Day} - {info.Name}");
-		}
-
-		Console.WriteLine();
-
-		Console.Write($"Select Day Index: ");
-		Console.ForegroundColor = ConsoleColor.Magenta;
-		Console.WriteLine($"(blank is {defaultDay})");
-		Console.ForegroundColor = ConsoleColor.Gray;
-
-		var inputDay = Console.ReadLine();
-
-		if(!int.TryParse(inputDay, out var parsedDay))
-			parsedDay = defaultDay;
-
-		RunDay(year, parsedDay);
+		_years = _loadedProblems.Keys.OrderDescending().ToList();
 	}
 
 	private void RunDay(string year, int dayIndex)
@@ -173,6 +132,238 @@ public class AOCRunner
 		{
 			sw.Stop();
 			Console.ForegroundColor = ConsoleColor.Gray;
+		}
+	}
+
+	public void RenderInteractiveMenu()
+	{
+		Console.BackgroundColor = ConsoleColor.Black;
+		Console.ForegroundColor = ConsoleColor.Gray;
+		Console.CursorVisible = false;
+		Console.Clear();
+		while (true)
+		{
+			InitSizing();
+			RenderTopBar();
+			RenderContentView();
+			ReadInput();
+		}
+	}
+
+	private void ReadInput()
+	{
+		var input = Console.ReadKey(true);
+		if(_isProblemMode)
+		{
+			if(input.Key is ConsoleKey.Enter or ConsoleKey.Escape) { 
+				_isProblemMode = false;
+				Console.Clear();
+			}
+			return;
+		}
+		var yearIndex = _years.IndexOf(_selectedYear);
+		var dayMax = _loadedProblems[_selectedYear].Count - 1;
+		switch(input.Key)
+		{
+			case ConsoleKey.LeftArrow:
+				_scollOffset = 0;
+				_selectedDay = 0;
+				if (yearIndex == 0)
+				{
+					_selectedYear = _years.Last();
+					break;
+				}
+				_selectedYear = _years[--yearIndex];
+			break;
+			case ConsoleKey.RightArrow:
+				_scollOffset = 0;
+				_selectedDay = 0;
+				if (yearIndex == _years.Count - 1)
+				{
+					_selectedYear = _years.First();
+					break;
+				}
+				_selectedYear = _years[++yearIndex];
+				break;
+			case ConsoleKey.UpArrow:
+				if (_selectedDay == 0)
+				{
+					_selectedDay = dayMax;
+					break;
+				}
+				_selectedDay--;
+			break;
+			case ConsoleKey.DownArrow:
+				if (_selectedDay == dayMax)
+				{
+					_selectedDay = 0;
+					break;
+				}
+				_selectedDay++;
+				break;
+
+			case ConsoleKey.Enter:
+				_isProblemMode = true;
+				break;
+		}
+		ConstrainListScroll();
+	}
+
+	private void RenderTopBar()
+	{
+		//Render Border
+		DrawBorder(1,0, Console.WindowWidth, 3);
+		Console.SetCursorPosition(Console.WindowWidth / 2 - 4, 1);
+		Console.ForegroundColor = ConsoleColor.Blue;
+		Console.Write(" Years ");
+		//Render Tabs
+		RenderTabList();
+	}
+
+	private void RenderTabList()
+	{
+		var buttonWidth = 6;
+		var tabMaxPos = Console.WindowWidth - 3;
+		for (int i = 0; i < _years.Count; i++)
+		{
+			var year = _years[i];
+			var col = (i * 7) + 2;
+			var end = col + buttonWidth;
+			if (end >= tabMaxPos)
+				break;
+			if(year == _selectedYear)
+				DrawSelectedButton(year, 2, col, buttonWidth, 1, ConsoleColor.Red, ConsoleColor.Blue);
+			else
+				DrawButton(year, 2, col, buttonWidth, 1, ConsoleColor.Gray, Console.BackgroundColor);
+		}
+
+
+	}
+
+	private void RenderContentView()
+	{
+		DrawBorder(5, 0, Console.WindowWidth, Console.WindowHeight - 5);
+		Console.SetCursorPosition(Console.WindowWidth/2 - 5, 5);
+		Console.ForegroundColor = ConsoleColor.Blue;
+		Console.Write(" Problems ");
+		if (_isProblemMode)
+			RenderProblemResults();
+		else
+			RenderProblemList();
+	}
+
+	private void RenderProblemList()
+	{
+		if(_loadedProblems.Count == 0)
+		{
+			DrawButton("There are no problems...", 6, 2, Console.WindowWidth - 2, Console.WindowHeight - 7);
+			return;
+		}
+		var problems = _loadedProblems[_selectedYear];
+
+
+
+		var listEnd = Math.Min(_maxProblemCount, problems.Count);
+
+		for (int i = 0; i < listEnd; i++)
+		{
+			var (info, _) = problems[i + _scollOffset];
+			var buttonText = $"{i + _scollOffset}.\t[Day {info.Day}] {info.Name}";
+			var row = i + 7;
+			if (i + _scollOffset == _selectedDay)
+				DrawSelectedButton(buttonText, row, 2, Console.WindowWidth - 4, 1, ConsoleColor.DarkMagenta, ConsoleColor.DarkGray, false, 2);
+			else
+				DrawButton(buttonText, row, 2, Console.WindowWidth - 4, 1, ConsoleColor.Cyan, Console.BackgroundColor, false, 2);
+		}
+		for (int i = problems.Count + 7; i < Console.WindowHeight - 2; i++)
+		{
+			Console.SetCursorPosition(2, i);
+			Console.Write(new string(' ', Console.WindowWidth - 4));
+		}
+	}
+
+	private void RenderProblemResults()
+	{
+		Console.SetCursorPosition(2, 7);
+		RunDay(_selectedYear, _selectedDay);
+	}
+	private void DrawSelectedButton(string text, int row, int col, int width, int height, ConsoleColor color = ConsoleColor.Gray, ConsoleColor background = ConsoleColor.Black, bool centered = true, int padding = 0)
+	{
+		//text = $"\ue0c7{text}\ue0c6";
+		Console.SetCursorPosition(row, col);
+		var origBg = Console.BackgroundColor;
+		Console.BackgroundColor = background;
+		for (int y = row; y < row + height; y++)
+		{
+			Console.SetCursorPosition(col, y);
+			Console.Write(new string(' ', width));
+		}
+		Console.ForegroundColor = color;
+		var xOffset = centered ? (width / 2) - (text.Length / 2) : padding;
+		var yOffset = centered ? height / 2 : padding;
+		if (height == 1)
+			yOffset = 0;
+		Console.SetCursorPosition(col + xOffset, row + yOffset);
+		Console.Write(text);
+		Console.BackgroundColor = origBg;
+		Console.ForegroundColor = background;
+		Console.SetCursorPosition(col, row + height / 2);
+		Console.Write('\ue0c7');
+		Console.SetCursorPosition(col + width -1, row + height / 2);
+		Console.Write('\ue0c6');
+
+		Console.BackgroundColor = origBg;
+
+	}
+
+	private void DrawButton(string text, int row, int col, int width, int height, ConsoleColor color = ConsoleColor.Gray, ConsoleColor background = ConsoleColor.Black, bool centered = true, int padding = 0)
+	{
+		Console.SetCursorPosition(row, col);
+		var origBg = Console.BackgroundColor;
+		Console.BackgroundColor = background;
+		for (int y = row; y < row + height; y++)
+		{
+			Console.SetCursorPosition(col, y);
+			Console.Write(new string(' ', width));
+		}
+		Console.ForegroundColor = color;
+		var xOffset = centered ? (width / 2) - (text.Length / 2) : padding;
+		var yOffset = centered ? height / 2 : padding;
+		if (height == 1)
+			yOffset = 0;
+		Console.SetCursorPosition(col + xOffset, row + yOffset);
+		Console.Write(text);
+		Console.BackgroundColor = origBg;
+
+	}
+
+	private void DrawBorder(int row, int col, int width, int height, ConsoleColor color = ConsoleColor.Gray, bool drawFill = false)
+	{
+		//║═╔╗╝╚
+		Console.ForegroundColor = ConsoleColor.Gray;
+		var w = col + width - 1;
+		var h = row + height - 1;
+		for (int x = col; x <= w; x++)
+		{
+			for (int y = row; y <= h; y++)
+			{
+				Console.SetCursorPosition(x, y);
+				if (x == col && y == row)
+					Console.Write('╔');
+				else if (x == col && y == h)
+					Console.Write('╚');
+				else if (x == w && y == row)
+					Console.Write('╗');
+				else if (x == w && y == h)
+					Console.Write('╝');
+				else if (x == col || x == w)
+					Console.Write('║');
+				else if (y == row || y == h)
+					Console.Write('═');
+				else if(drawFill)
+					Console.Write(' ');
+
+			}
 		}
 	}
 }

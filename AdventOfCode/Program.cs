@@ -7,6 +7,6 @@ internal class Program
 	private static void Main(string[] args)
 	{
 		var runner = new AOCRunner();
-		runner.RenderMenu();
+		runner.RenderInteractiveMenu();
 	}
 }
