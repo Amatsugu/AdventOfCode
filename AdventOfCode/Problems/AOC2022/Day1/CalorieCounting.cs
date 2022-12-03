@@ -43,6 +43,8 @@ internal class CalorieCounting : Problem
         _mostestElf = FlaresFood
 			.Select((x, idx) => (sum: x.Sum(), idx))
 			.MaxBy(x => x.sum);
+
+		Part1 = _mostestElf.Value.ToString();
     }
 
     public override void CalculatePart2()
@@ -51,29 +53,6 @@ internal class CalorieCounting : Problem
 			.Select((x, idx) => (sum: x.Sum(), idx))
 			.OrderByDescending(e => e.sum)
 			.Take(3);
-    }
-
-
-    public override void PrintPart1()
-    {
-		if (_mostestElf == null)
-		{
-			Console.WriteLine("Part 1 has not been calculated");
-			return;
-		}
-		Console.WriteLine($"Mostest: {_mostestElf}");
-    }
-
-    public override void PrintPart2()
-    {
-		if(_mostestElves == null)
-		{
-			Console.WriteLine("Part 2 has not been calculated");
-			return;
-		}
-		Console.WriteLine("Top Elves");
-		foreach (var elf in _mostestElves)
-			Console.WriteLine($"\t{elf}");
-		Console.WriteLine($"Total {_mostestElves.Sum(e => e.sum)}");
-    }
+		Part2 = _mostestElves.Sum(e => e.sum).ToString();
+	}
 }

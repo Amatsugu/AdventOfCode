@@ -14,4 +14,10 @@
     </EmbeddedResource>
   </ItemGroup>
 
+
+  <ItemGroup>
+    <None Remove="Problems\AOC2022\Day3\input.txt" />
+    <None Remove="Problems\AOC2022\Day3\test.txt" />
+  </ItemGroup>
+
 </Project>

@@ -7,8 +7,6 @@ namespace AdventOfCode.Problems.AOC2022.Day2;
 internal class RockPaperScissors : Problem
 {
 	private string[] _lines;
-	private int _part1Score;
-	private int _part2Score;
 
 	public RockPaperScissors()
 	{
@@ -31,7 +29,7 @@ internal class RockPaperScissors : Problem
 			totalScore += GetMoveValue(response);
 			totalScore += GetResult(move, response);
 		}
-		_part1Score = totalScore;
+		Part1 = totalScore.ToString();
 	}
 
 	private static int GetMoveValue(char move)
@@ -98,16 +96,6 @@ internal class RockPaperScissors : Problem
 			score += GetResponseValue(move, result);
 			score += GetResultValue(result);
 		}
-		_part2Score = score;
-	}
-
-	public override void PrintPart1()
-	{
-		Console.WriteLine($"P1: {_part1Score}");
-	}
-
-	public override void PrintPart2()
-	{
-		Console.WriteLine($"P2: {_part2Score}");
+		Part2 = score.ToString();
 	}
 }

@@ -36,16 +36,38 @@ public class AOCRunner
 
 	public void RenderMenu()
 	{
-		var years = _loadedProblems.Keys.OrderByDescending(k => k);
 
 		var defaultYear = DateTime.Now.Year.ToString();
 
-		Console.WriteLine($"Select a Year: (blank is {defaultYear})");
+		RenderYears(defaultYear);
+
+		Console.Write("Select a Year: ");
+		Console.ForegroundColor = ConsoleColor.Red;
+		Console.WriteLine($"(blank is {defaultYear})");
+		Console.ForegroundColor = ConsoleColor.Gray;
 		var inputYear = Console.ReadLine();
 		if (string.IsNullOrWhiteSpace(inputYear))
 			inputYear = defaultYear;
 
-		RenderYearMenu(defaultYear);
+		RenderYearMenu(inputYear);
+	}
+
+	private void RenderYears(string defaultYear)
+	{
+		var years = _loadedProblems.Keys.OrderByDescending(k => k);
+
+		foreach (var year in years)
+		{
+			Console.ForegroundColor = ConsoleColor.Red;
+			if (defaultYear == year)
+				Console.Write("\t> ");
+			else
+				Console.Write("\t  ");
+
+			Console.Write($"{year} ");
+			Console.ForegroundColor = ConsoleColor.Gray;
+			Console.WriteLine($"- {_loadedProblems[year].Count} Problems");
+		}
 	}
 
 	private void RenderYearMenu(string year)
@@ -55,6 +77,7 @@ public class AOCRunner
 			Console.WriteLine($"No problems for {year} exist");
 			return;
 		}
+		var defaultDay = DateTime.Now.Day;
 		Console.ForegroundColor = ConsoleColor.Red;
 		Console.WriteLine($"{year}:");
 		Console.ForegroundColor = ConsoleColor.Gray;
@@ -63,15 +86,21 @@ public class AOCRunner
 		{
 			var (info, _) = days[i];
 			Console.ForegroundColor = ConsoleColor.Magenta;
-			Console.Write($"\t [{i}]");
+			if(i == defaultDay)
+				Console.Write($"\t> [{i}]");
+			else
+				Console.Write($"\t  [{i}]");
 			Console.ForegroundColor = ConsoleColor.Gray;
 			Console.WriteLine($" - Day {info.Day} - {info.Name}");
 		}
 
 		Console.WriteLine();
-		var defaultDay = DateTime.Now.Day;
 
-		Console.WriteLine($"Select Day Index: (blank is {defaultDay})");
+		Console.Write($"Select Day Index: ");
+		Console.ForegroundColor = ConsoleColor.Magenta;
+		Console.WriteLine($"(blank is {defaultDay})");
+		Console.ForegroundColor = ConsoleColor.Gray;
+
 		var inputDay = Console.ReadLine();
 
 		if(!int.TryParse(inputDay, out var parsedDay))
@@ -88,20 +117,22 @@ public class AOCRunner
 
 		Console.Clear();
 		var (info, problemType) = yearList[dayIndex];
+		Console.Write("Problem: ");
+		Console.ForegroundColor = ConsoleColor.Yellow;
+		Console.WriteLine($"\t{info.Name}");
+		Console.ForegroundColor = ConsoleColor.DarkRed;
+		Console.WriteLine($"\t\t{info.Year} - Day {info.Day}");
 
-		Console.WriteLine($"Problem: \t{info.Name}");
-		Console.WriteLine($"\t\t{info.Year} - {info.Day}");
+		Console.ForegroundColor = ConsoleColor.Gray;
 
-
-		var problem = Activator.CreateInstance(problemType) as Problem;
-		if(problem == null ) {
+		if (Activator.CreateInstance(problemType) is not Problem problem)
+		{
 			Console.WriteLine("Failed to create problem isntance");
 			return;
 		}
-		Console.WriteLine("Loading Input data...");
-		problem.LoadInput();
 
-		Console.WriteLine();
+		Console.WriteLine("Loading Input data...\n");
+		problem.LoadInput();
 
 		RunPart("Calculating Part 1", problem.CalculatePart1);
 		RunPart("Calculating Part 2", problem.CalculatePart2);
