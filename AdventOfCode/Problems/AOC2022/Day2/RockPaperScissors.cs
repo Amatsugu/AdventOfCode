@@ -4,7 +4,7 @@ using AdventOfCode.Runner.Attributes;
 namespace AdventOfCode.Problems.AOC2022.Day2;
 
 [ProblemInfo("2022", 2, "Rock Paper Scissors")]
-internal class RockPaperScissors : IProblem
+internal class RockPaperScissors : Problem
 {
 	private string[] _lines;
 	private int _part1Score;
@@ -15,12 +15,12 @@ internal class RockPaperScissors : IProblem
 		_lines = Array.Empty<string>();
 	}
 
-	public void LoadInput()
+	public override void LoadInput()
 	{
-		_lines = File.ReadAllLines("Problems/AOC2022/Day2/input.txt");
+		_lines = File.ReadAllLines(GetInputFile("input.txt"));
 	}
 
-	public void CalculatePart1()
+	public override void CalculatePart1()
 	{
 		var totalScore = 0;
 		foreach (var line in _lines)
@@ -88,7 +88,7 @@ internal class RockPaperScissors : IProblem
 	}
 
 	
-	public void CalculatePart2()
+	public override void CalculatePart2()
 	{
 		var score = 0;
 		foreach (var line in _lines)
@@ -101,12 +101,12 @@ internal class RockPaperScissors : IProblem
 		_part2Score = score;
 	}
 
-	public void PrintPart1()
+	public override void PrintPart1()
 	{
 		Console.WriteLine($"P1: {_part1Score}");
 	}
 
-	public void PrintPart2()
+	public override void PrintPart2()
 	{
 		Console.WriteLine($"P2: {_part2Score}");
 	}
