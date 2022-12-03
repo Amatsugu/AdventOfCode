@@ -1,18 +1,27 @@
-﻿using System;
+﻿using AdventOfCode.Runner.Attributes;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace AdventOfCode.Runner;
-public interface IProblem
+public abstract class Problem
 {
-	void LoadInput();
+	public abstract void LoadInput();
+	public abstract void CalculatePart1();
+	public abstract void PrintPart1();
+	public abstract void CalculatePart2();
+	public abstract void PrintPart2();
 
-	void CalculatePart1();
-
-	void PrintPart1();
-
-	void CalculatePart2();
-	void PrintPart2();
+	protected string GetInputFile(string filename)
+	{
+		var info = this.GetType().GetCustomAttribute<ProblemInfoAttribute>();
+		if (info == null)
+			return filename;
+		
+		return Path.Combine($"Problems/AOC{info.Year}/Day{info.Day}", filename);
+	}
 }

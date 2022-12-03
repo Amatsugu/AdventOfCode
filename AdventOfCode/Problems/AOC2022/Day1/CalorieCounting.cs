@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AdventOfCode.Problems.AOC2022.Day1;
 [ProblemInfo("2022", 1, "Calorie Counting")]
-internal class CalorieCounting : IProblem
+internal class CalorieCounting : Problem
 {
 	public List<List<int>> FlaresFood { get; set; }
 
@@ -23,9 +23,9 @@ internal class CalorieCounting : IProblem
 		};
 	}
 
-	public void LoadInput()
+	public override void LoadInput()
     {
-        var lines = File.ReadAllLines("Problems/AOC2022/Day1/input.txt");
+        var lines = File.ReadAllLines(GetInputFile("input.txt"));
 		var c = 0;
 		foreach (var calorie in lines)
 		{
@@ -38,14 +38,14 @@ internal class CalorieCounting : IProblem
 			FlaresFood[c].Add(int.Parse(calorie));
 		}
     }
-    public void CalculatePart1()
+    public override void CalculatePart1()
     {
         _mostestElf = FlaresFood
 			.Select((x, idx) => (sum: x.Sum(), idx))
 			.MaxBy(x => x.sum);
     }
 
-    public void CalculatePart2()
+    public override void CalculatePart2()
     {
         _mostestElves = FlaresFood
 			.Select((x, idx) => (sum: x.Sum(), idx))
@@ -54,7 +54,7 @@ internal class CalorieCounting : IProblem
     }
 
 
-    public void PrintPart1()
+    public override void PrintPart1()
     {
 		if (_mostestElf == null)
 		{
@@ -64,7 +64,7 @@ internal class CalorieCounting : IProblem
 		Console.WriteLine($"Mostest: {_mostestElf}");
     }
 
-    public void PrintPart2()
+    public override void PrintPart2()
     {
 		if(_mostestElves == null)
 		{
