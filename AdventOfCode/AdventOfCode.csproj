@@ -14,10 +14,24 @@
     </EmbeddedResource>
   </ItemGroup>
 
+	<ItemGroup>
+		<EmbeddedResource Include="Problems\*\*\*.csv">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</EmbeddedResource>
+	</ItemGroup>
+
 
   <ItemGroup>
     <None Remove="Problems\AOC2022\Day3\input.txt" />
     <None Remove="Problems\AOC2022\Day3\test.txt" />
+    <None Remove="Problems\AOC2022\Day4\input.txt" />
+    <None Remove="Problems\AOC2022\Day4\test.txt" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="Problems\AOC2015\" />
+    <Folder Include="Problems\AOC2021\" />
   </ItemGroup>
 
 </Project>

@@ -2,7 +2,7 @@
 using AdventOfCode.Runner.Attributes;
 
 namespace AdventOfCode.Problems.AOC2022.Day0;
-[ProblemInfo("2022", 0, "Fancy Test")]
+[ProblemInfo(2022, 0, "Fancy Test")]
 public class TestProblem : Problem
 {
 	public override void LoadInput()

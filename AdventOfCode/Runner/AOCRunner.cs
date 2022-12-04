@@ -8,12 +8,13 @@ namespace AdventOfCode.Runner;
 
 public class AOCRunner
 {
-	private Dictionary<string, List<(ProblemInfoAttribute info, Type type)>> _loadedProblems;
-	private List<string> _years;
-	private string _selectedYear;
+	private Dictionary<int, List<(ProblemInfoAttribute info, Type type)>> _loadedProblems;
+	private List<int> _years;
+	private int _selectedYear;
 	private int _selectedDay;
 	private int _scollOffset = 0;
 	private int _maxProblemCount;
+	private bool _isQuiting;
 
 	private bool _isProblemMode = false;
 
@@ -21,8 +22,8 @@ public class AOCRunner
 	{
 		Console.OutputEncoding = Encoding.UTF8;
 		_loadedProblems = new();
-		_years = new List<string>();
-		_selectedYear = DateTime.Now.Year.ToString();
+		_years = new List<int>();
+		_selectedYear = DateTime.Now.Year;
 		FindProblemClasses();
 
 		InitSizing();
@@ -50,7 +51,7 @@ public class AOCRunner
 
 	private void FindProblemClasses()
 	{
-		var types = Assembly.GetExecutingAssembly().DefinedTypes.Where(t => t.IsAssignableTo(typeof(Problem)) && !t.IsInterface);
+		var types = Assembly.GetExecutingAssembly().DefinedTypes.Where(t => !t.IsAbstract);
 		if (types == null)
 			return;
 		foreach (var type in types)
@@ -68,7 +69,7 @@ public class AOCRunner
 		_years = _loadedProblems.Keys.OrderDescending().ToList();
 	}
 
-	private void RunDay(string year, int dayIndex)
+	private void RunDay(int year, int dayIndex)
 	{
 		var yearList = _loadedProblems[year];
 		if (yearList.Count <= dayIndex || dayIndex < 0)
@@ -84,7 +85,7 @@ public class AOCRunner
 
 		Console.ForegroundColor = ConsoleColor.Gray;
 
-		if (Activator.CreateInstance(problemType) is not Problem problem)
+		if (Activator.CreateInstance(problemType) is not IProblem problem)
 		{
 			Console.WriteLine("Failed to create problem isntance");
 			return;
@@ -122,6 +123,11 @@ public class AOCRunner
 			Console.ForegroundColor = ConsoleColor.Cyan;
 			Console.WriteLine($"{sw.ElapsedMilliseconds}ms");
 		}
+		catch (NotImplementedException)
+		{
+			Console.ForegroundColor = ConsoleColor.Red;
+			Console.WriteLine("Not Implemented");
+		}
 		catch (Exception e)
 		{
 			Console.ForegroundColor = ConsoleColor.Red;
@@ -141,7 +147,7 @@ public class AOCRunner
 		Console.ForegroundColor = ConsoleColor.Gray;
 		Console.CursorVisible = false;
 		Console.Clear();
-		while (true)
+		while (!_isQuiting)
 		{
 			InitSizing();
 			RenderTopBar();
@@ -205,6 +211,9 @@ public class AOCRunner
 			case ConsoleKey.Enter:
 				_isProblemMode = true;
 				break;
+			case ConsoleKey.Escape:
+				_isQuiting = true;
+				break;
 		}
 		ConstrainListScroll();
 	}
@@ -232,9 +241,9 @@ public class AOCRunner
 			if (end >= tabMaxPos)
 				break;
 			if(year == _selectedYear)
-				DrawSelectedButton(year, 2, col, buttonWidth, 1, ConsoleColor.Red, ConsoleColor.Blue);
+				DrawSelectedButton(year.ToString(), 2, col, buttonWidth, 1, ConsoleColor.Red, ConsoleColor.Blue);
 			else
-				DrawButton(year, 2, col, buttonWidth, 1, ConsoleColor.Gray, Console.BackgroundColor);
+				DrawButton(year.ToString(), 2, col, buttonWidth, 1, ConsoleColor.Gray, Console.BackgroundColor);
 		}
 
 
@@ -290,7 +299,6 @@ public class AOCRunner
 	private void DrawSelectedButton(string text, int row, int col, int width, int height, ConsoleColor color = ConsoleColor.Gray, ConsoleColor background = ConsoleColor.Black, bool centered = true, int padding = 0)
 	{
 		//text = $"\ue0c7{text}\ue0c6";
-		Console.SetCursorPosition(row, col);
 		var origBg = Console.BackgroundColor;
 		Console.BackgroundColor = background;
 		for (int y = row; y < row + height; y++)
@@ -318,7 +326,6 @@ public class AOCRunner
 
 	private void DrawButton(string text, int row, int col, int width, int height, ConsoleColor color = ConsoleColor.Gray, ConsoleColor background = ConsoleColor.Black, bool centered = true, int padding = 0)
 	{
-		Console.SetCursorPosition(row, col);
 		var origBg = Console.BackgroundColor;
 		Console.BackgroundColor = background;
 		for (int y = row; y < row + height; y++)

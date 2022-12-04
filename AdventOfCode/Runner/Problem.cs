@@ -4,16 +4,34 @@ using System.Reflection;
 
 namespace AdventOfCode.Runner;
 
-public abstract class Problem
+public interface IProblem
 {
-	protected string? Part1 { get; set; }
-	protected string? Part2 { get; set; }
+	void LoadInput();
+
+	void CalculatePart1();
+
+	void PrintPart1();
+
+	void CalculatePart2();
+
+	void PrintPart2();
+}
+
+public abstract class Problem : Problem<string, string>
+{
+}
+
+public abstract class Problem<TPart1, TPart2> : IProblem
+{
+	protected TPart1? Part1 { get; set; }
+	protected TPart2? Part2 { get; set; }
 
 	public abstract void LoadInput();
 
 	public abstract void CalculatePart1();
 
-	public virtual void PrintPart1() {
+	public virtual void PrintPart1()
+	{
 		Console.ForegroundColor = ConsoleColor.Gray;
 		if (Part1 == null)
 		{

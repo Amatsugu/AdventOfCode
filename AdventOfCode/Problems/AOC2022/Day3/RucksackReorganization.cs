@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace AdventOfCode.Problems.AOC2022.Day3;
-[ProblemInfo("2022", 3, "Rucksack Reorganization")]
+[ProblemInfo(2022, 3, "Rucksack Reorganization")]
 internal class RucksackReorganization : Problem
 {
 	private string[] _sacks;

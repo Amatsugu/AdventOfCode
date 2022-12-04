@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Runner;
+﻿
+global using AdventOfCode.Runner;
 
 namespace AdventOfCode;
 

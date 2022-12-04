@@ -3,7 +3,7 @@ using AdventOfCode.Runner.Attributes;
 
 namespace AdventOfCode.Problems.AOC2022.Day2;
 
-[ProblemInfo("2022", 2, "Rock Paper Scissors")]
+[ProblemInfo(2022, 2, "Rock Paper Scissors")]
 internal class RockPaperScissors : Problem
 {
 	private string[] _lines;

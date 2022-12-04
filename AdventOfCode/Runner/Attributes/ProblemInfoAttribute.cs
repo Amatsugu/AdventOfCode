@@ -2,9 +2,9 @@
 public class ProblemInfoAttribute : Attribute
 {
 	public int Day { get; init; }
-	public string Year { get; init; }
+	public int Year { get; init; }
 	public string Name { get; init; }
-	public ProblemInfoAttribute(string year, int day, string name)
+	public ProblemInfoAttribute(int year, int day, string name)
 	{
 		Year = year;
 		Day = day;

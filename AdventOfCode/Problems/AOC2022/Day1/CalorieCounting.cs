@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace AdventOfCode.Problems.AOC2022.Day1;
-[ProblemInfo("2022", 1, "Calorie Counting")]
+[ProblemInfo(2022, 1, "Calorie Counting")]
 internal class CalorieCounting : Problem
 {
 	public List<List<int>> FlaresFood { get; set; }
