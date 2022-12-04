@@ -121,7 +121,7 @@ public class AOCRunner
 			Console.ForegroundColor = ConsoleColor.Green;
 			Console.Write("Done in ");
 			Console.ForegroundColor = ConsoleColor.Cyan;
-			Console.WriteLine($"{sw.ElapsedMilliseconds}ms");
+			Console.WriteLine($"{sw.Elapsed.TotalMilliseconds:n}ms");
 		}
 		catch (NotImplementedException)
 		{

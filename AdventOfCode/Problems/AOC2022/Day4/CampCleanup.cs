@@ -25,7 +25,9 @@ internal class CampCleanup : Problem<int, int>
 					.Chunk(2)
 					.Select(r => new Range(r.First(), r.Last()))
 					.First()
-				).Chunk(2).Select(pair => (pair.First(), pair.Last())).First();
+				).Chunk(2)
+				 .Select(pair => (pair.First(), pair.Last()))
+				 .First();
 			_pairs.Add((a, b));
 		}
 	}
@@ -64,6 +66,6 @@ internal class CampCleanup : Problem<int, int>
 			return (B >= other.A && A <= other.A) || (A <= other.B && B >= other.B) || (A >= other.A && B <= other.B);
 		}
 
-		public static implicit operator Range((int a, int b) value) => new Range(value.a, value.b);
+		public static implicit operator Range((int a, int b) value) => new (value.a, value.b);
 	}
 }
