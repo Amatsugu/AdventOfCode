@@ -128,12 +128,12 @@ public class AOCRunner
 			Console.ForegroundColor = ConsoleColor.Red;
 			Console.WriteLine("Not Implemented");
 		}
-		catch (Exception e)
-		{
-			Console.ForegroundColor = ConsoleColor.Red;
-			Console.WriteLine("Failed");
-			Console.WriteLine(e);
-		}
+		//catch (Exception e)
+		//{
+		//	Console.ForegroundColor = ConsoleColor.Red;
+		//	Console.WriteLine("Failed");
+		//	Console.WriteLine(e);
+		//}
 		finally
 		{
 			sw.Stop();

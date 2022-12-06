@@ -26,12 +26,19 @@
     <None Remove="Problems\AOC2022\Day3\test.txt" />
     <None Remove="Problems\AOC2022\Day4\input.txt" />
     <None Remove="Problems\AOC2022\Day4\test.txt" />
+    <None Remove="Problems\AOC2022\Day5\input.txt" />
+    <None Remove="Problems\AOC2022\Day5\test.txt" />
   </ItemGroup>
 
 
   <ItemGroup>
     <Folder Include="Problems\AOC2015\" />
     <Folder Include="Problems\AOC2021\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="Superpower" Version="3.0.0" />
   </ItemGroup>
 
 </Project>
