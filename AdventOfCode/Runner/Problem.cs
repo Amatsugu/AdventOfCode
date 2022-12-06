@@ -42,7 +42,7 @@ public abstract class Problem<TPart1, TPart2> : IProblem
 		else
 		{
 			Console.Write("Part 1: ");
-			Console.ForegroundColor = ConsoleColor.Blue;
+			Console.ForegroundColor = ConsoleColor.DarkYellow;
 			Console.WriteLine($"{Part1}");
 		}
 		Console.ForegroundColor = ConsoleColor.Gray;
@@ -62,7 +62,7 @@ public abstract class Problem<TPart1, TPart2> : IProblem
 		else
 		{
 			Console.Write("Part 2: ");
-			Console.ForegroundColor = ConsoleColor.Blue;
+			Console.ForegroundColor = ConsoleColor.DarkYellow;
 			Console.WriteLine($"{Part2}");
 		}
 		Console.ForegroundColor = ConsoleColor.Gray;
