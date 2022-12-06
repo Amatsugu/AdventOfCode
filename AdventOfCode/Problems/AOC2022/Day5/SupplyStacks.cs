@@ -13,7 +13,7 @@ internal partial class SupplyStacks : Problem
 {
 	private List<char>[] _stacksPart1 = Array.Empty<List<char>>();
 	private List<char>[] _stacksPart2 = Array.Empty<List<char>>();
-	private TextParser<(int, int, int)> _moveParser = from move in Character.Letter.Or(Character.WhiteSpace).Many()
+	private readonly TextParser<(int, int, int)> _moveParser = from move in Character.Letter.Or(Character.WhiteSpace).Many()
 													  from stack in Character.Digit.Many()
 													  from frm in Character.Letter.Or(Character.WhiteSpace).Many()
 													  from source in Character.Digit.Many()
@@ -32,7 +32,7 @@ internal partial class SupplyStacks : Problem
 		Part1 = new string(_stacksPart1.Select(b => b.Last()).ToArray());
 	}
 
-	private void PerformBasicMove(List<char>[] data, (int stack, int from, int to) move)
+	private static void PerformBasicMove(List<char>[] data, (int stack, int from, int to) move)
 	{
 		var from = data[move.from-1];
 		var to = data[move.to-1];
@@ -44,7 +44,7 @@ internal partial class SupplyStacks : Problem
 		}
 	}
 
-	private void PerformMove(List<char>[] data, (int stack, int from, int to) move)
+	private static void PerformMove(List<char>[] data, (int stack, int from, int to) move)
 	{
 		var from = data[move.from - 1];
 		var to = data[move.to - 1];
@@ -105,7 +105,7 @@ internal partial class SupplyStacks : Problem
 		return _moveParser.Parse(line);
 	}
 
-	private (int stack, int from, int to) ParseMoveLineRegex(string line)
+	private static (int stack, int from, int to) ParseMoveLineRegex(string line)
 	{
 		var r = MoveParser().Matches(line);
 		var items = r.First()
@@ -115,7 +115,7 @@ internal partial class SupplyStacks : Problem
 		return (items[0], items[1], items[2]);
 	}
 
-	private List<char> ParseCrateLine(string line)
+	private static List<char> ParseCrateLine(string line)
 	{
 		var result = new List<char>(line.Length / 4);
 		for (int i = 1; i < line.Length; i += 4)

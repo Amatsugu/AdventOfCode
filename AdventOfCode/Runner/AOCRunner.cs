@@ -27,23 +27,25 @@ public class AOCRunner
 		FindProblemClasses();
 
 		InitSizing();
-		if(_years.Count > 0)
+		if (_years.Count > 0)
 		{
 			_selectedDay = _loadedProblems[_selectedYear].Count - 1;
-			ConstrainListScroll();	
+			ConstrainListScroll();
 		}
 	}
 
-	private void InitSizing() {
+	private void InitSizing()
+	{
 		_maxProblemCount = Console.WindowHeight - 9;
 	}
 
 	private void ConstrainListScroll()
 	{
-		if (_selectedDay >= _maxProblemCount )
+		if (_selectedDay >= _maxProblemCount)
 		{
 			_scollOffset = _loadedProblems[_selectedYear].Count - _maxProblemCount;
-		} if(_selectedDay < _scollOffset)
+		}
+		if (_selectedDay < _scollOffset)
 		{
 			_scollOffset = _selectedDay;
 		}
@@ -91,11 +93,16 @@ public class AOCRunner
 			return;
 		}
 
-		Console.WriteLine("Loading Input data...\n");
-		problem.LoadInput();
+		var time = ReadInput(problem);
+		time += RunPart("Calculating Part 1", problem.CalculatePart1);
+		time += RunPart("Calculating Part 2", problem.CalculatePart2);
 
-		RunPart("Calculating Part 1", problem.CalculatePart1);
-		RunPart("Calculating Part 2", problem.CalculatePart2);
+		Console.WriteLine();
+		Console.Write($"Total Elapsed Time: ");
+		Console.ForegroundColor = ConsoleColor.Cyan;
+		Console.WriteLine($"{time.TotalMilliseconds}ms");
+
+		Console.ForegroundColor = ConsoleColor.Gray;
 
 		Console.WriteLine();
 		Console.WriteLine("Printing Results:");
@@ -108,7 +115,23 @@ public class AOCRunner
 		Console.Write("\n\n");
 	}
 
-	private static void RunPart(string name, Action action)
+	private static TimeSpan ReadInput(IProblem problem)
+	{
+		var sw = new Stopwatch();
+		Console.WriteLine();
+		Console.Write("Loading Input data... ");
+		sw.Start();
+		problem.LoadInput();
+		sw.Stop();
+
+		Console.ForegroundColor = ConsoleColor.Green;
+		Console.Write("Done in ");
+		Console.ForegroundColor = ConsoleColor.Cyan;
+		Console.WriteLine($"{sw.Elapsed.TotalMilliseconds:n}ms");
+		return sw.Elapsed;
+	}
+
+	private static TimeSpan RunPart(string name, Action action)
 	{
 		Console.ForegroundColor = ConsoleColor.Gray;
 		var sw = new Stopwatch();
@@ -139,6 +162,7 @@ public class AOCRunner
 			sw.Stop();
 			Console.ForegroundColor = ConsoleColor.Gray;
 		}
+		return sw.Elapsed;
 	}
 
 	public void RenderInteractiveMenu()
@@ -159,9 +183,10 @@ public class AOCRunner
 	private void ReadInput()
 	{
 		var input = Console.ReadKey(true);
-		if(_isProblemMode)
+		if (_isProblemMode)
 		{
-			if(input.Key is ConsoleKey.Enter or ConsoleKey.Escape) { 
+			if (input.Key is ConsoleKey.Enter or ConsoleKey.Escape)
+			{
 				_isProblemMode = false;
 				Console.Clear();
 			}
@@ -169,7 +194,7 @@ public class AOCRunner
 		}
 		var yearIndex = _years.IndexOf(_selectedYear);
 		var dayMax = _loadedProblems[_selectedYear].Count - 1;
-		switch(input.Key)
+		switch (input.Key)
 		{
 			case ConsoleKey.LeftArrow:
 				_scollOffset = 0;
@@ -180,7 +205,8 @@ public class AOCRunner
 					break;
 				}
 				_selectedYear = _years[--yearIndex];
-			break;
+				break;
+
 			case ConsoleKey.RightArrow:
 				_scollOffset = 0;
 				_selectedDay = 0;
@@ -191,6 +217,7 @@ public class AOCRunner
 				}
 				_selectedYear = _years[++yearIndex];
 				break;
+
 			case ConsoleKey.UpArrow:
 				if (_selectedDay == 0)
 				{
@@ -198,7 +225,8 @@ public class AOCRunner
 					break;
 				}
 				_selectedDay--;
-			break;
+				break;
+
 			case ConsoleKey.DownArrow:
 				if (_selectedDay == dayMax)
 				{
@@ -211,6 +239,7 @@ public class AOCRunner
 			case ConsoleKey.Enter:
 				_isProblemMode = true;
 				break;
+
 			case ConsoleKey.Escape:
 				_isQuiting = true;
 				break;
@@ -220,8 +249,10 @@ public class AOCRunner
 
 	private void RenderTopBar()
 	{
+		if (_isProblemMode)
+			return;
 		//Render Border
-		DrawBorder(1,0, Console.WindowWidth, 3);
+		DrawBorder(1, 0, Console.WindowWidth, 3);
 		Console.SetCursorPosition(Console.WindowWidth / 2 - 4, 1);
 		Console.ForegroundColor = ConsoleColor.Blue;
 		Console.Write(" Years ");
@@ -240,37 +271,35 @@ public class AOCRunner
 			var end = col + buttonWidth;
 			if (end >= tabMaxPos)
 				break;
-			if(year == _selectedYear)
+			if (year == _selectedYear)
 				DrawSelectedButton(year.ToString(), 2, col, buttonWidth, 1, ConsoleColor.Red, ConsoleColor.Blue);
 			else
 				DrawButton(year.ToString(), 2, col, buttonWidth, 1, ConsoleColor.Gray, Console.BackgroundColor);
 		}
-
-
 	}
 
 	private void RenderContentView()
 	{
-		DrawBorder(5, 0, Console.WindowWidth, Console.WindowHeight - 5);
-		Console.SetCursorPosition(Console.WindowWidth/2 - 5, 5);
-		Console.ForegroundColor = ConsoleColor.Blue;
-		Console.Write(" Problems ");
-		if (_isProblemMode)
-			RenderProblemResults();
-		else
+		if (!_isProblemMode)
+		{
+			DrawBorder(5, 0, Console.WindowWidth, Console.WindowHeight - 5);
+			Console.SetCursorPosition(Console.WindowWidth / 2 - 5, 5);
+			Console.ForegroundColor = ConsoleColor.Blue;
+			Console.Write(" Problems ");
 			RenderProblemList();
+		}
+		else 
+			RenderProblemResults();
 	}
 
 	private void RenderProblemList()
 	{
-		if(_loadedProblems.Count == 0)
+		if (_loadedProblems.Count == 0)
 		{
 			DrawButton("There are no problems...", 6, 2, Console.WindowWidth - 2, Console.WindowHeight - 7);
 			return;
 		}
 		var problems = _loadedProblems[_selectedYear];
-
-
 
 		var listEnd = Math.Min(_maxProblemCount, problems.Count);
 
@@ -296,6 +325,7 @@ public class AOCRunner
 		Console.SetCursorPosition(2, 7);
 		RunDay(_selectedYear, _selectedDay);
 	}
+
 	private void DrawSelectedButton(string text, int row, int col, int width, int height, ConsoleColor color = ConsoleColor.Gray, ConsoleColor background = ConsoleColor.Black, bool centered = true, int padding = 0)
 	{
 		//text = $"\ue0c7{text}\ue0c6";
@@ -317,11 +347,10 @@ public class AOCRunner
 		Console.ForegroundColor = background;
 		Console.SetCursorPosition(col, row + height / 2);
 		Console.Write('\ue0c7');
-		Console.SetCursorPosition(col + width -1, row + height / 2);
+		Console.SetCursorPosition(col + width - 1, row + height / 2);
 		Console.Write('\ue0c6');
 
 		Console.BackgroundColor = origBg;
-
 	}
 
 	private void DrawButton(string text, int row, int col, int width, int height, ConsoleColor color = ConsoleColor.Gray, ConsoleColor background = ConsoleColor.Black, bool centered = true, int padding = 0)
@@ -341,7 +370,6 @@ public class AOCRunner
 		Console.SetCursorPosition(col + xOffset, row + yOffset);
 		Console.Write(text);
 		Console.BackgroundColor = origBg;
-
 	}
 
 	private void DrawBorder(int row, int col, int width, int height, ConsoleColor color = ConsoleColor.Gray, bool drawFill = false)
@@ -367,9 +395,8 @@ public class AOCRunner
 					Console.Write('║');
 				else if (y == row || y == h)
 					Console.Write('═');
-				else if(drawFill)
+				else if (drawFill)
 					Console.Write(' ');
-
 			}
 		}
 	}

@@ -28,6 +28,8 @@
     <None Remove="Problems\AOC2022\Day4\test.txt" />
     <None Remove="Problems\AOC2022\Day5\input.txt" />
     <None Remove="Problems\AOC2022\Day5\test.txt" />
+    <None Remove="Problems\AOC2022\Day6\input.txt" />
+    <None Remove="Problems\AOC2022\Day6\test.txt" />
   </ItemGroup>
 
 
