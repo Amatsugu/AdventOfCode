@@ -22,6 +22,10 @@
 
 
   <ItemGroup>
+    <None Remove="Problems\AOC2022\Day10\input.txt" />
+    <None Remove="Problems\AOC2022\Day10\sara.txt" />
+    <None Remove="Problems\AOC2022\Day10\simple.txt" />
+    <None Remove="Problems\AOC2022\Day10\test.txt" />
     <None Remove="Problems\AOC2022\Day3\input.txt" />
     <None Remove="Problems\AOC2022\Day3\test.txt" />
     <None Remove="Problems\AOC2022\Day4\input.txt" />
@@ -32,6 +36,9 @@
     <None Remove="Problems\AOC2022\Day6\test.txt" />
     <None Remove="Problems\AOC2022\Day8\input.txt" />
     <None Remove="Problems\AOC2022\Day8\test.txt" />
+    <None Remove="Problems\AOC2022\Day9\input.txt" />
+    <None Remove="Problems\AOC2022\Day9\test.txt" />
+    <None Remove="Problems\AOC2022\Day9\test2.txt" />
   </ItemGroup>
 
 
