@@ -26,6 +26,8 @@
     <None Remove="Problems\AOC2022\Day10\sara.txt" />
     <None Remove="Problems\AOC2022\Day10\simple.txt" />
     <None Remove="Problems\AOC2022\Day10\test.txt" />
+    <None Remove="Problems\AOC2022\Day11\input.txt" />
+    <None Remove="Problems\AOC2022\Day11\test.txt" />
     <None Remove="Problems\AOC2022\Day3\input.txt" />
     <None Remove="Problems\AOC2022\Day3\test.txt" />
     <None Remove="Problems\AOC2022\Day4\input.txt" />
