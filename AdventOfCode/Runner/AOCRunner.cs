@@ -25,6 +25,9 @@ public class AOCRunner
 		_years = new List<int>();
 		_selectedYear = DateTime.Now.Year;
 		FindProblemClasses();
+		
+		if(!_loadedProblems.ContainsKey(_selectedYear))
+			_selectedYear = _loadedProblems.Keys.First();
 
 		InitSizing();
 		if (_years.Count > 0)
