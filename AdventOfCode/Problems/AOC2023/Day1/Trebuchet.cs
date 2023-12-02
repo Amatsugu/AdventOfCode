@@ -47,7 +47,7 @@ public partial class Trebuchet : Problem<int, int>
 		return (left, right);
 	}
 
-	private readonly (string word, int value)[] numberWords = new []
+	private readonly (string word, int value)[] _numberWords = new []
 	{
 		 ("one", 1),
 		 ("two", 2),
@@ -72,7 +72,7 @@ public partial class Trebuchet : Problem<int, int>
 		var (left, right) = (0, 0);
 		for (int i = 0; i < line.Length; i++)
 		{
-			var word = numberWords.FirstOrDefault(v => line[i..].StartsWith(v.word), (word: "", value: -1)).value;
+			var word = _numberWords.FirstOrDefault(v => line[i..].StartsWith(v.word), (word: "", value: -1)).value;
 			if (word != -1)
 			{
 				left = word;
@@ -85,7 +85,7 @@ public partial class Trebuchet : Problem<int, int>
 		}
 		for (int i = line.Length - 1; i >= 0; i--)
 		{
-			var word = numberWords.FirstOrDefault(v => line[..(i + 1)].EndsWith(v.word), (word: "", value: -1)).value;
+			var word = _numberWords.FirstOrDefault(v => line[..(i + 1)].EndsWith(v.word), (word: "", value: -1)).value;
 			if (word != -1)
 			{
 				right = word;
