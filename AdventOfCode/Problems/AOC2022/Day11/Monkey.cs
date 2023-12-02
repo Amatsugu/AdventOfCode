@@ -38,7 +38,7 @@ internal class Monkey
 	{
 		InspectionCount++;
 		value = Operate(value);
-		if(worryOffset != 0)
+		if (worryOffset != 0)
 			value /= worryOffset;
 		return value;
 	}
@@ -68,6 +68,6 @@ internal class Monkey
 
 	public override string ToString()
 	{
-		return $"{MonkeyNumber}: ({InspectionCount}) [{string.Join(", ",Items)}]";
+		return $"{MonkeyNumber}: ({InspectionCount}) [{string.Join(", ", Items)}]";
 	}
 }

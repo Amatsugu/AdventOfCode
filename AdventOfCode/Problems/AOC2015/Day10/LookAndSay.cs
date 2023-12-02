@@ -1,13 +1,9 @@
 ﻿using AdventOfCode.Runner.Attributes;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace AdventOfCode.Problems.AOC2015.Day10;
+
 [ProblemInfo(2015, 10, "Evles Look, Elves Say")]
 internal class LookAndSay : Problem<int, int>
 {

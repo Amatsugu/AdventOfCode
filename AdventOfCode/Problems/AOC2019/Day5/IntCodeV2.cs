@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-
-namespace AdventOfCode.Day_5
+﻿namespace AdventOfCode.Day_5
 {
 	public class IntCodeV2
 	{
@@ -19,7 +14,6 @@ namespace AdventOfCode.Day_5
 				this.paramCount = paramCount;
 				this.action = action;
 			}
-
 		}
 
 		public bool IsHalted { get; private set; }
@@ -167,10 +161,11 @@ namespace AdventOfCode.Day_5
 		{
 			var opModes = new int[3];
 			var arr = instruction.ToIntArray();
-			switch(arr.Length)
+			switch (arr.Length)
 			{
 				case 1:
 					return (opModes, arr[0]);
+
 				case 2:
 					return (opModes, (arr[^2] * 10) + arr[^1]);
 			}
@@ -234,7 +229,5 @@ namespace AdventOfCode.Day_5
 			_instructionPointer = 0;
 			return this;
 		}
-
-
 	}
 }

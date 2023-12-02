@@ -1,5 +1,4 @@
-﻿using AdventOfCode.Runner;
-using AdventOfCode.Runner.Attributes;
+﻿using AdventOfCode.Runner.Attributes;
 
 namespace AdventOfCode.Problems.AOC2022.Day2;
 
@@ -74,7 +73,8 @@ internal class RockPaperScissors : Problem
 		};
 	}
 
-	private static int GetResponseValue(char move, char result) {
+	private static int GetResponseValue(char move, char result)
+	{
 		var p = result switch
 		{
 			'X' => (GetMoveValue(move) + 2) % 3, //Lose
@@ -85,7 +85,6 @@ internal class RockPaperScissors : Problem
 		return p == 0 ? 3 : p;
 	}
 
-	
 	public override void CalculatePart2()
 	{
 		var score = 0;

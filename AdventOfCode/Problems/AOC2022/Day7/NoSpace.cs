@@ -3,7 +3,7 @@
 namespace AdventOfCode.Problems.AOC2022.Day7;
 
 [ProblemInfo(2022, 7, "No Space Left On Device")]
-internal class NoSpace : Problem<int,int>
+internal class NoSpace : Problem<int, int>
 {
 	private DirectoryNode _dirTree = new DirectoryNode("/");
 
@@ -37,7 +37,8 @@ internal class NoSpace : Problem<int,int>
 				ParseCommand(line[2..], ref curDir);
 				dir = $"/{string.Join("/", curDir.Reverse())}";
 				_dirTree.AddDirectory(dir);
-			}else
+			}
+			else
 				ReadDirectory(line, _dirTree.GetDirectory(dir)!);
 		}
 	}

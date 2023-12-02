@@ -1,12 +1,7 @@
 ﻿using AdventOfCode.Runner.Attributes;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace AdventOfCode.Problems.AOC2023.Day2;
+
 [ProblemInfo(2023, 2, "Cube Conundrum")]
 internal class CubeConundrum : Problem<int, int>
 {

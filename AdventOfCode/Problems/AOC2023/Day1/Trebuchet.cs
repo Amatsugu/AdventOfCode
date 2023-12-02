@@ -1,14 +1,5 @@
 ﻿using AdventOfCode.Runner.Attributes;
 
-using Superpower.Parsers;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
 namespace AdventOfCode.Problems.AOC2023.Day1;
 
 [ProblemInfo(2023, 1, "Trebuchet!?")]
@@ -20,6 +11,7 @@ public partial class Trebuchet : Problem<int, int>
 	{
 		_inputData = ReadInputLines();
 	}
+
 	public override void CalculatePart1()
 	{
 		Part1 = _inputData.Select(GetCalibrationValues)
@@ -48,7 +40,7 @@ public partial class Trebuchet : Problem<int, int>
 		return (left, right);
 	}
 
-	private readonly (string word, int value)[] _numberWords = new []
+	private readonly (string word, int value)[] _numberWords = new[]
 	{
 		 ("one", 1),
 		 ("two", 2),
@@ -78,13 +70,14 @@ public partial class Trebuchet : Problem<int, int>
 			{
 				left = word;
 				break;
-			}else if(line[i] - '0' >= 10)
+			}
+			else if (line[i] - '0' >= 10)
 				continue;
 
 			left = line[i] - '0';
 			break;
 		}
-		
+
 		for (int i = line.Length - 1; i >= 0; i--)
 		{
 			var word = _numberWords.FirstOrDefault(v => line[..(i + 1)].EndsWith(v.word, StringComparison.Ordinal), (word: "", value: -1)).value;

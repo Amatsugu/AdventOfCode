@@ -1,8 +1,6 @@
-﻿using System.Collections;
+﻿namespace AdventOfCode.Problems.AOC2022.Day7;
 
-namespace AdventOfCode.Problems.AOC2022.Day7;
-
-internal class DirectoryNode 
+internal class DirectoryNode
 {
 	public DirectoryNode Parent { get; set; }
 	public string Name { get; set; }
@@ -40,7 +38,7 @@ internal class DirectoryNode
 	{
 		if (path == "/")
 			return this;
-		if(string.IsNullOrWhiteSpace(path))
+		if (string.IsNullOrWhiteSpace(path))
 			return this;
 		var segments = path.Split("/").Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
 		if (segments.Length == 0)
@@ -91,19 +89,19 @@ internal class DirectoryNode
 
 		var child = Children.FirstOrDefault(c => c.Name == segments[0]);
 
-		if(child == null)
+		if (child == null)
 			return null;
 		else
-			if(segments.Length == 1)
-				return child;
-			else
-				return child.GetDirectory(segments[1..]);
+			if (segments.Length == 1)
+			return child;
+		else
+			return child.GetDirectory(segments[1..]);
 	}
 
 	public List<DirectoryNode> Where(Func<DirectoryNode, bool> filter)
 	{
 		var result = new List<DirectoryNode>();
-		if(filter(this))
+		if (filter(this))
 			result.Add(this);
 		result.AddRange(Children.SelectMany(c => c.Where(filter)));
 		return result;

@@ -1,11 +1,5 @@
 ﻿using AdventOfCode.Runner.Attributes;
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-
 namespace AdventOfCode.Problems.AOC2019.Day1
 {
 	[ProblemInfo(2019, 1, "The Tyranny of the Rocket Equation")]
@@ -27,7 +21,7 @@ namespace AdventOfCode.Problems.AOC2019.Day1
 			return curCost + GetFuelCost(curCost);
 		}
 
-		public static int GetCost(int mass) => mass/ 3 - 2;
+		public static int GetCost(int mass) => mass / 3 - 2;
 
 		public override void LoadInput()
 		{
@@ -41,7 +35,6 @@ namespace AdventOfCode.Problems.AOC2019.Day1
 
 		public override void CalculatePart2()
 		{
-			
 			Part2 = GetFuelRequirement(_input);
 		}
 	}

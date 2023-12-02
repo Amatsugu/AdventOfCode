@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AdventOfCode.Problems.AOC2023.Day2;
+﻿namespace AdventOfCode.Problems.AOC2023.Day2;
 
 internal class CubeGame
 {
@@ -25,12 +17,12 @@ internal class CubeGame
 			Rounds[i] = CubeRound.ParseRound(roundsData[i]);
 	}
 
-	public CubeRound GetMinimalConstraints() 
+	public CubeRound GetMinimalConstraints()
 	{
 		var (r, g, b) = (0, 0, 0);
 		foreach (var round in Rounds)
 		{
-			if(round.Red > r)
+			if (round.Red > r)
 				r = round.Red;
 			if (round.Green > g)
 				g = round.Green;
@@ -54,15 +46,15 @@ internal record struct CubeRound(int Red, int Green, int Blue)
 			var count = int.Parse(info[0]);
 			switch (info[1])
 			{
-				case "red":
+				case ['r', ..]:
 					r = count;
 					break;
 
-				case "green":
+				case ['g', ..]:
 					g = count;
 					break;
 
-				case "blue":
+				case ['b', ..]:
 					b = count;
 					break;
 			}
@@ -72,7 +64,7 @@ internal record struct CubeRound(int Red, int Green, int Blue)
 
 	public readonly bool IsPossible(CubeRound constraints)
 	{
-		if(Red > constraints.Red)
+		if (Red > constraints.Red)
 			return false;
 		if (Green > constraints.Green)
 			return false;

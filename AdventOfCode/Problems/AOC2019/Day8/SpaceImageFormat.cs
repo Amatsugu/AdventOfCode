@@ -1,11 +1,5 @@
 ﻿using AdventOfCode.Runner.Attributes;
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-
 namespace AdventOfCode.Problems.AOC2019.Day8
 {
 	[ProblemInfo(2019, 8, "Space Image Format")]
@@ -18,7 +12,6 @@ namespace AdventOfCode.Problems.AOC2019.Day8
 			var imageData = File.ReadAllText("Day8/input.txt").Replace("\n", "").Select(c => int.Parse(c.ToString())).ToArray();
 
 			Console.WriteLine(Checksum(imageData, 25, 6));
-
 		}
 
 		public static void RenderImage(int[] data, int h, int w)
@@ -28,10 +21,8 @@ namespace AdventOfCode.Problems.AOC2019.Day8
 
 			for (int l = 0; l < layerCount; l++)
 			{
-
 			}
 		}
-
 
 		public static int Checksum(int[] data, int h, int w)
 		{
@@ -54,9 +45,11 @@ namespace AdventOfCode.Problems.AOC2019.Day8
 						case 0:
 							zeroCount[l]++;
 							break;
+
 						case 1:
 							oneCount[l]++;
 							break;
+
 						case 2:
 							twoCount[l]++;
 							break;
@@ -70,7 +63,6 @@ namespace AdventOfCode.Problems.AOC2019.Day8
 			}
 
 			return oneCount[smallestLayer] * twoCount[smallestLayer];
-
 		}
 
 		public override void LoadInput()

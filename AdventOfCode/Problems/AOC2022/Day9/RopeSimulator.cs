@@ -68,7 +68,6 @@ public class RopeSimulator
 			else
 				_visited.Add(tail, 1);
 		}
-		
 	}
 
 	private void FollowHead()
@@ -129,12 +128,12 @@ public class RopeSimulator
 		Draw('s', (0, 0), lowerX, upperY);
 		Draw('H', _head, lowerX, upperY);
 
-		for (int i = _segments.Length -1; i >= 0; i--)
+		for (int i = _segments.Length - 1; i >= 0; i--)
 		{
-			if(segment  == i)
-				Console.ForegroundColor= ConsoleColor.Red;
+			if (segment == i)
+				Console.ForegroundColor = ConsoleColor.Red;
 			else
-				Console.ForegroundColor= ConsoleColor.Gray;
+				Console.ForegroundColor = ConsoleColor.Gray;
 			Draw((i + 1).ToString()[0], _segments[i], lowerX, upperY);
 		}
 	}

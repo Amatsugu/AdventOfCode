@@ -1,13 +1,6 @@
 ﻿using AdventOfCode.Runner.Attributes;
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
 
 namespace AdventOfCode.Problems.AOC2019.Day3
 {
@@ -157,7 +150,7 @@ namespace AdventOfCode.Problems.AOC2019.Day3
 							return false;
 						}
 					}
-					else //Both 
+					else //Both
 					{
 						if (min.X != other.min.X)
 						{
@@ -227,7 +220,6 @@ namespace AdventOfCode.Problems.AOC2019.Day3
 
 		public static int SolveWires(string[] wires)
 		{
-
 			var (wireSegmentsA, wireSegmentsB) = CreateWirePair(wires);
 
 			int shortestWire = int.MaxValue;
@@ -270,7 +262,6 @@ namespace AdventOfCode.Problems.AOC2019.Day3
 		{
 			var wireA = wires[0].Split(',');
 			var wireSegmentsA = CreateWire(wireA);
-
 
 			var wireB = wires[1].Split(',');
 			var wireSegmentsB = CreateWire(wireB);

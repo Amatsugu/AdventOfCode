@@ -1,11 +1,5 @@
 ﻿using AdventOfCode.Runner.Attributes;
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-
 namespace AdventOfCode.Problems.AOC2019.Day4
 {
 	[ProblemInfo(2019, 4, "Secure Container")]
@@ -30,7 +24,6 @@ namespace AdventOfCode.Problems.AOC2019.Day4
 
 		public static bool HasDoubles(int[] password)
 		{
-
 			bool foundDouble = false;
 			for (int i = 0; i < 6; i++)
 			{
@@ -53,7 +46,6 @@ namespace AdventOfCode.Problems.AOC2019.Day4
 					foundDouble = true;
 			}
 			return foundDouble;
-
 		}
 
 		public static bool IsAssending(int[] password)
@@ -67,8 +59,6 @@ namespace AdventOfCode.Problems.AOC2019.Day4
 			}
 			return true;
 		}
-
-		
 
 		public static int CountPasswordsPart1(int lower, int upper)
 		{
@@ -87,6 +77,7 @@ namespace AdventOfCode.Problems.AOC2019.Day4
 			}
 			return passwordCount;
 		}
+
 		public static int CountPasswordsPart2(int lower, int upper)
 		{
 			int passwordCount = 0;
@@ -138,7 +129,6 @@ namespace AdventOfCode.Problems.AOC2019.Day4
 				}
 			}
 		}
-
 
 		public override void LoadInput()
 		{

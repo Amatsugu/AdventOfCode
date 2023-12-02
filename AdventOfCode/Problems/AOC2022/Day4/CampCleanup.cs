@@ -1,13 +1,7 @@
-﻿using AdventOfCode.Runner;
-using AdventOfCode.Runner.Attributes;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AdventOfCode.Runner.Attributes;
 
 namespace AdventOfCode.Problems.AOC2022.Day4;
+
 [ProblemInfo(2022, 4, "Camp Cleanup")]
 internal class CampCleanup : Problem<int, int>
 {
@@ -19,7 +13,7 @@ internal class CampCleanup : Problem<int, int>
 		foreach (var line in lines)
 		{
 			var (a, b) = line.Split(',')
-				.Select(range => 
+				.Select(range =>
 					range.Split('-')
 					.Select(v => int.Parse(v))
 					.Chunk(2)
@@ -31,7 +25,6 @@ internal class CampCleanup : Problem<int, int>
 			_pairs.Add((a, b));
 		}
 	}
-
 
 	public override void CalculatePart1()
 	{
@@ -50,9 +43,8 @@ internal class CampCleanup : Problem<int, int>
 		{
 			if (a.OverlapsWith(b))
 				Part2++;
-		}	
+		}
 	}
-
 
 	record Range(int A, int B)
 	{
@@ -66,6 +58,6 @@ internal class CampCleanup : Problem<int, int>
 			return (B >= other.A && A <= other.A) || (A <= other.B && B >= other.B) || (A >= other.A && B <= other.B);
 		}
 
-		public static implicit operator Range((int a, int b) value) => new (value.a, value.b);
+		public static implicit operator Range((int a, int b) value) => new(value.a, value.b);
 	}
 }

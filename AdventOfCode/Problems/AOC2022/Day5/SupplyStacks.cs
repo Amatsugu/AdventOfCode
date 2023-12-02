@@ -3,7 +3,6 @@
 using Superpower;
 using Superpower.Parsers;
 
-using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Problems.AOC2022.Day5;
@@ -13,15 +12,16 @@ internal partial class SupplyStacks : Problem
 {
 	private List<char>[] _stacksPart1 = Array.Empty<List<char>>();
 	private List<char>[] _stacksPart2 = Array.Empty<List<char>>();
-	private readonly TextParser<(int, int, int)> _moveParser = from move in Character.Letter.Or(Character.WhiteSpace).Many()
-													  from stack in Character.Digit.Many()
-													  from frm in Character.Letter.Or(Character.WhiteSpace).Many()
-													  from source in Character.Digit.Many()
-													  from to in Character.Letter.Or(Character.WhiteSpace).Many()
-													  from dst in Character.Digit.Many()
-													  select (int.Parse(stack), int.Parse(source), int.Parse(dst));
 
-	private List<(int stack, int from, int to)> _moves = new ();
+	private readonly TextParser<(int, int, int)> _moveParser = from move in Character.Letter.Or(Character.WhiteSpace).Many()
+															   from stack in Character.Digit.Many()
+															   from frm in Character.Letter.Or(Character.WhiteSpace).Many()
+															   from source in Character.Digit.Many()
+															   from to in Character.Letter.Or(Character.WhiteSpace).Many()
+															   from dst in Character.Digit.Many()
+															   select (int.Parse(stack), int.Parse(source), int.Parse(dst));
+
+	private List<(int stack, int from, int to)> _moves = new();
 
 	public override void CalculatePart1()
 	{
@@ -34,12 +34,12 @@ internal partial class SupplyStacks : Problem
 
 	private static void PerformBasicMove(List<char>[] data, (int stack, int from, int to) move)
 	{
-		var from = data[move.from-1];
-		var to = data[move.to-1];
+		var from = data[move.from - 1];
+		var to = data[move.to - 1];
 		for (int i = 0; i < move.stack; i++)
 		{
 			var item = from[^1];
-			from.RemoveAt(from.Count-1);
+			from.RemoveAt(from.Count - 1);
 			to.Add(item);
 		}
 	}

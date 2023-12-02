@@ -1,9 +1,6 @@
 ﻿using AdventOfCode.Runner.Attributes;
 
 using System.Collections;
-using System.Numerics;
-using System.Text;
-
 
 namespace AdventOfCode.Problems.AOC2021.Day11;
 
@@ -76,7 +73,6 @@ public class DumboOctopus : Problem<int, int>, IEnumerable<byte>
 	{
 		Increment(ref data);
 		Flash(ref data, ref flashes);
-
 	}
 
 	private static void Increment(ref byte[] data)

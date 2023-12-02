@@ -1,12 +1,5 @@
 ﻿using AdventOfCode.Runner.Attributes;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-
 namespace AdventOfCode.Problems.AOC2021.Day3;
 
 [ProblemInfo(2021, 3, "Binary Diagnostic")]

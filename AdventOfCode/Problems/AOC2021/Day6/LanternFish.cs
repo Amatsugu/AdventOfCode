@@ -1,11 +1,5 @@
 ﻿using AdventOfCode.Runner.Attributes;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace AdventOfCode.Problems.AOC2021.Day6;
 
 [ProblemInfo(2021, 6, "Lanternfish")]
@@ -18,11 +12,11 @@ internal class LanternFish : Problem<long, long>
 		var input = ReadInputLines();
 		Data = input.First().Split(",").Select(v => int.Parse(v)).ToArray();
 	}
+
 	public override void CalculatePart1()
 	{
 		var lifetimes = PrepareLifetimes();
 		Part1 = Simulate(lifetimes, 80);
-
 	}
 
 	public override void CalculatePart2()
@@ -53,8 +47,4 @@ internal class LanternFish : Problem<long, long>
 
 		return lifetimes.Sum();
 	}
-
-
-
-
 }

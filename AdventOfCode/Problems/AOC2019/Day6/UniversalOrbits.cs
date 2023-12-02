@@ -1,12 +1,7 @@
 ﻿using AdventOfCode.Runner.Attributes;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace AdventOfCode.Problems.AOC2019.Day6;
+
 [ProblemInfo(2019, 6, "Universal Orbit Map")]
 internal class UniversalOrbits : Problem<int, int>
 {
@@ -14,7 +9,7 @@ internal class UniversalOrbits : Problem<int, int>
 
 	public override void CalculatePart1()
 	{
-		if(_map == null)
+		if (_map == null)
 			return;
 		Part1 = _map.CalculateOrbits();
 	}
@@ -30,7 +25,6 @@ internal class UniversalOrbits : Problem<int, int>
 		int dist = 0;
 
 		HashSet<string> pathYOU = new(pathToYOU.Select(o => o.Name));
-
 
 		for (int i = 0; i < pathToSAN.Count; i++)
 		{
@@ -50,7 +44,6 @@ internal class UniversalOrbits : Problem<int, int>
 			}
 		}
 		Part2 = dist - 2;
-
 	}
 
 	public override void LoadInput()

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace AdventOfCode.Problems.AOC2022.Day10;
 
-namespace AdventOfCode.Problems.AOC2022.Day10;
 internal class CathodeCPU
 {
 	public enum Instruction
@@ -38,9 +33,9 @@ internal class CathodeCPU
 
 		return result;
 	}
+
 	public void ExecuteCode((Instruction ins, int value)[] code, Action<int, int> processor)
 	{
-
 		while (_programCounter < code.Length)
 		{
 			var (ins, value) = code[_programCounter];
@@ -52,23 +47,20 @@ internal class CathodeCPU
 				case { ins: Instruction.NoOp }:
 					_programCounter++;
 					break;
-				case { ins: Instruction.AddX, _pending : -1 }:
+
+				case { ins: Instruction.AddX, _pending: -1 }:
 					_pending = 1;
 					break;
+
 				case { ins: Instruction.AddX, _pending: 0 }:
 					X += value;
 					_programCounter++;
 					break;
 			}
 
-			
-
-			if(_pending >= 0)
+			if (_pending >= 0)
 				_pending--;
-			_cycleNumber++;	
+			_cycleNumber++;
 		}
-
 	}
-
-
 }

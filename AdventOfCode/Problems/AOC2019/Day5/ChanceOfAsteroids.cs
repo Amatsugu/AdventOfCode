@@ -1,14 +1,8 @@
 ﻿using AdventOfCode.Day_5;
 using AdventOfCode.Runner.Attributes;
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace AdventOfCode.Problems.AOC2019.Day5;
+
 [ProblemInfo(2019, 5, "Sunny with a Chance of Asteroids")]
 internal class ChanceOfAsteroids : Problem<int, int>
 {

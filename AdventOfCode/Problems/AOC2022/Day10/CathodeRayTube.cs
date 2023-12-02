@@ -25,11 +25,10 @@ internal class CathodeRayTube : Problem<int, string>
 			if (cycle > output.Length)
 				return;
 
-
 			var pos = signal % 40;
 			var head = (cycle % 40);
 			var sprite = Math.Abs(pos - head);
-			if(sprite <= 1)
+			if (sprite <= 1)
 				output[cycle] = '█';
 		});
 

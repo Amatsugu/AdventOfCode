@@ -1,19 +1,14 @@
-﻿using AdventOfCode.Runner;
-using AdventOfCode.Runner.Attributes;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AdventOfCode.Runner.Attributes;
 
 namespace AdventOfCode.Problems.AOC2022.Day3;
+
 [ProblemInfo(2022, 3, "Rucksack Reorganization")]
 internal class RucksackReorganization : Problem
 {
 	private string[] _sacks;
 
-	public RucksackReorganization() { 
+	public RucksackReorganization()
+	{
 		_sacks = Array.Empty<string>();
 	}
 
@@ -21,6 +16,7 @@ internal class RucksackReorganization : Problem
 	{
 		_sacks = ReadInputLines("input.txt");
 	}
+
 	public override void CalculatePart1()
 	{
 		var total = 0;
@@ -55,5 +51,4 @@ internal class RucksackReorganization : Problem
 		}
 		Part2 = total.ToString();
 	}
-
 }

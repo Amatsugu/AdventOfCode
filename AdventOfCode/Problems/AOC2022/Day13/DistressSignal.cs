@@ -1,12 +1,7 @@
 ﻿using AdventOfCode.Runner.Attributes;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace AdventOfCode.Problems.AOC2022.Day13;
+
 [ProblemInfo(2022, 13, "Distress Signal")]
 internal class DistressSignal : Problem
 {

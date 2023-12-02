@@ -31,6 +31,7 @@ public class NiceList : Problem<int, int>
 			}
 		}
 	}
+
 	private static bool IsNice2(string value)
 	{
 		var pairs = new Dictionary<string, List<int>>();

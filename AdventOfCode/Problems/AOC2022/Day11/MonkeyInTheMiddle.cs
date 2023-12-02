@@ -1,13 +1,7 @@
 ﻿using AdventOfCode.Runner.Attributes;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace AdventOfCode.Problems.AOC2022.Day11;
+
 [ProblemInfo(2022, 11, "Monkey in the Middle")]
 internal class MonkeyInTheMiddle : Problem<int, int>
 {
@@ -37,7 +31,6 @@ internal class MonkeyInTheMiddle : Problem<int, int>
 		var lines = ReadInputLines("test.txt").Chunk(7);
 		_monkeysPart1 = lines.Select(ln => new Monkey(ln)).ToArray();
 		_monkeysPart2 = lines.Select(ln => new Monkey(ln)).ToArray();
-
 	}
 
 	private static void Simulate(Monkey[] monkeys, int rounds, uint worry = 3)
@@ -54,8 +47,8 @@ internal class MonkeyInTheMiddle : Problem<int, int>
 			SimulateTurn(monkey, monkeys, worry);
 	}
 
-
-	private static void SimulateTurn(Monkey monkey, Monkey[] monkeys, uint worry = 3) {
+	private static void SimulateTurn(Monkey monkey, Monkey[] monkeys, uint worry = 3)
+	{
 		for (int i = 0; i < monkey.Items.Count; i++)
 		{
 			var item = monkey.Inspect(monkey.Items[i], worry);
