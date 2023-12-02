@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -41,6 +41,7 @@
     <None Remove="Problems\AOC2022\Day9\input.txt" />
     <None Remove="Problems\AOC2022\Day9\test.txt" />
     <None Remove="Problems\AOC2022\Day9\test2.txt" />
+    <None Remove="problems\aoc2023\day1\input.txt" />
   </ItemGroup>
 
 
@@ -53,5 +54,4 @@
   <ItemGroup>
     <PackageReference Include="Superpower" Version="3.0.0" />
   </ItemGroup>
-
 </Project>
