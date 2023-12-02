@@ -14,7 +14,7 @@ namespace AdventOfCode.Problems.AOC2023.Day1;
 [ProblemInfo(2023, 1, "Trebuchet!?")]
 public partial class Trebuchet : Problem<int, int>
 {
-	private string[] _inputData = Array.Empty<string>();
+	private string[] _inputData = [];
 
 	public override void LoadInput()
 	{
@@ -34,6 +34,7 @@ public partial class Trebuchet : Problem<int, int>
 		{
 			if (line[i] - '0' >= 10)
 				continue;
+
 			left = line[i] - '0';
 			break;
 		}
@@ -83,6 +84,7 @@ public partial class Trebuchet : Problem<int, int>
 			left = line[i] - '0';
 			break;
 		}
+		
 		for (int i = line.Length - 1; i >= 0; i--)
 		{
 			var word = _numberWords.FirstOrDefault(v => line[..(i + 1)].EndsWith(v.word), (word: "", value: -1)).value;
@@ -99,9 +101,4 @@ public partial class Trebuchet : Problem<int, int>
 		}
 		return (left, right);
 	}
-
-
-	[GeneratedRegex("(?<1>one)|(?<2>two)|(?<3>three)|(?<4>four)|(?<5>five)|(?<6>six)|(?<7>seven)|(?<8>eight)|(?<9>nine)|(?<1>1)|(?<2>2)|(?<3>3)|(?<4>4)|(?<5>5)|(?<6>6)|(?<7>7)|(?<8>8)|(?<9>9)")]
-	public static partial Regex ParseNumbers();
-
 }

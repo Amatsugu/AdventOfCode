@@ -1,17 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+	<OutputType>Exe</OutputType>
+	<TargetFramework>net8.0</TargetFramework>
+	<ImplicitUsings>enable</ImplicitUsings>
+	<Nullable>enable</Nullable>
   </PropertyGroup>
 
 
   <ItemGroup>
-    <EmbeddedResource Include="Problems\*\*\*.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+	<EmbeddedResource Include="Problems\*\*\*.txt">
+	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</EmbeddedResource>
   </ItemGroup>
 
 	<ItemGroup>
@@ -22,36 +22,36 @@
 
 
   <ItemGroup>
-    <None Remove="Problems\AOC2022\Day10\input.txt" />
-    <None Remove="Problems\AOC2022\Day10\sara.txt" />
-    <None Remove="Problems\AOC2022\Day10\simple.txt" />
-    <None Remove="Problems\AOC2022\Day10\test.txt" />
-    <None Remove="Problems\AOC2022\Day11\input.txt" />
-    <None Remove="Problems\AOC2022\Day11\test.txt" />
-    <None Remove="Problems\AOC2022\Day3\input.txt" />
-    <None Remove="Problems\AOC2022\Day3\test.txt" />
-    <None Remove="Problems\AOC2022\Day4\input.txt" />
-    <None Remove="Problems\AOC2022\Day4\test.txt" />
-    <None Remove="Problems\AOC2022\Day5\input.txt" />
-    <None Remove="Problems\AOC2022\Day5\test.txt" />
-    <None Remove="Problems\AOC2022\Day6\input.txt" />
-    <None Remove="Problems\AOC2022\Day6\test.txt" />
-    <None Remove="Problems\AOC2022\Day8\input.txt" />
-    <None Remove="Problems\AOC2022\Day8\test.txt" />
-    <None Remove="Problems\AOC2022\Day9\input.txt" />
-    <None Remove="Problems\AOC2022\Day9\test.txt" />
-    <None Remove="Problems\AOC2022\Day9\test2.txt" />
-    <None Remove="problems\aoc2023\day1\input.txt" />
+	<None Remove="Problems\AOC2022\Day10\input.txt" />
+	<None Remove="Problems\AOC2022\Day10\sara.txt" />
+	<None Remove="Problems\AOC2022\Day10\simple.txt" />
+	<None Remove="Problems\AOC2022\Day10\test.txt" />
+	<None Remove="Problems\AOC2022\Day11\input.txt" />
+	<None Remove="Problems\AOC2022\Day11\test.txt" />
+	<None Remove="Problems\AOC2022\Day3\input.txt" />
+	<None Remove="Problems\AOC2022\Day3\test.txt" />
+	<None Remove="Problems\AOC2022\Day4\input.txt" />
+	<None Remove="Problems\AOC2022\Day4\test.txt" />
+	<None Remove="Problems\AOC2022\Day5\input.txt" />
+	<None Remove="Problems\AOC2022\Day5\test.txt" />
+	<None Remove="Problems\AOC2022\Day6\input.txt" />
+	<None Remove="Problems\AOC2022\Day6\test.txt" />
+	<None Remove="Problems\AOC2022\Day8\input.txt" />
+	<None Remove="Problems\AOC2022\Day8\test.txt" />
+	<None Remove="Problems\AOC2022\Day9\input.txt" />
+	<None Remove="Problems\AOC2022\Day9\test.txt" />
+	<None Remove="Problems\AOC2022\Day9\test2.txt" />
+	<None Remove="problems\aoc2023\day1\input.txt" />
   </ItemGroup>
 
 
   <ItemGroup>
-    <Folder Include="Problems\AOC2015\" />
-    <Folder Include="Problems\AOC2021\" />
+	<Folder Include="Problems\AOC2015\" />
+	<Folder Include="Problems\AOC2021\" />
   </ItemGroup>
 
 
   <ItemGroup>
-    <PackageReference Include="Superpower" Version="3.0.0" />
+	<PackageReference Include="Superpower" Version="3.0.0" />
   </ItemGroup>
 </Project>
