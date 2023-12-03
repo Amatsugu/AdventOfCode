@@ -25,11 +25,11 @@ internal class GearRatios : Problem<int, int>
 			for (int x = 0; x <= _width; x++)
 			{
 				var cell = _data[y][x];
-				switch (cell - '0')
+				switch (cell)
 				{
-					case '.' - '0':
+					case '.':
 						continue;
-					case < 0 or > 9:
+					case < '0' or > '9':
 						FindNumbers(x, y, ref partNumbers);
 						break;
 				}
@@ -66,9 +66,9 @@ internal class GearRatios : Problem<int, int>
 		var numEnd = _width + 1;
 		for (int i = x; i >= 0; i--)
 		{
-			switch (row[i] - '0')
+			switch (row[i])
 			{
-				case < 0 or > 9:
+				case < '0' or > '9':
 					numStart = i + 1;
 					goto leftDone;
 			}
@@ -76,9 +76,9 @@ internal class GearRatios : Problem<int, int>
 	leftDone:
 		for (int i = x; i <= _width; i++)
 		{
-			switch (row[i] - '0')
+			switch (row[i])
 			{
-				case < 0 or > 9:
+				case < '0' or > '9':
 					numEnd = i;
 					goto done;
 			}
