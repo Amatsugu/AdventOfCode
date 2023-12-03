@@ -38,6 +38,29 @@ internal class GearRatios : Problem<int, int>
 		Part1 = partNumbers.Sum();
 	}
 
+	public override void CalculatePart2()
+	{
+		var ratios = new List<int>();
+		var curNums = new List<int>();
+		for (int y = 0; y < _height; y++)
+		{
+			for (int x = 0; x <= _width; x++)
+			{
+				var cell = _data[y][x];
+				switch (cell)
+				{
+					case '*':
+						curNums.Clear();
+						FindNumbers(x, y, ref curNums);
+						if (curNums.Count == 2)
+							ratios.Add(curNums[0] * curNums[1]);
+						break;
+				}
+			}
+		}
+		Part2 = ratios.Sum();
+	}
+
 	public void FindNumbers(int x, int y, ref List<int> results)
 	{
 		var seen = new HashSet<(int x, int y)>();
@@ -56,6 +79,29 @@ internal class GearRatios : Problem<int, int>
 				results.Add(num);
 			}
 		}
+	}
+
+	public List<(int x, int y)> GetNeighborPoints(int x, int y)
+	{
+		var points = new List<(int x, int y)>();
+		if (x > 0)
+			points.Add((x - 1, y));
+		if (x < _width)
+			points.Add((x + 1, y));
+		if (y > 0)
+			points.Add((x, y - 1));
+		if (y < _height)
+			points.Add((x, y + 1));
+		if (x > 0 && y > 0)
+			points.Add((x - 1, y - 1));
+		if (x > 0 && y < _height)
+			points.Add((x - 1, y + 1));
+		if (x < _width && y < _height)
+			points.Add((x + 1, y + 1));
+		if (x < _width && y > 0)
+			points.Add((x + 1, y - 1));
+
+		return points;
 	}
 
 	public int GetNumber(int x, int y, out (int iX, int iY) index)
@@ -86,51 +132,5 @@ internal class GearRatios : Problem<int, int>
 	done:
 		index = (numStart, y);
 		return int.Parse(row[numStart..numEnd]);
-	}
-
-	public List<(int x, int y)> GetNeighborPoints(int x, int y)
-	{
-		var points = new List<(int x, int y)>();
-		if (x > 0)
-			points.Add((x - 1, y));
-		if (x < _width)
-			points.Add((x + 1, y));
-		if (y > 0)
-			points.Add((x, y - 1));
-		if (y < _height)
-			points.Add((x, y + 1));
-		if (x > 0 && y > 0)
-			points.Add((x - 1, y - 1));
-		if (x > 0 && y < _height)
-			points.Add((x - 1, y + 1));
-		if (x < _width && y < _height)
-			points.Add((x + 1, y + 1));
-		if (x < _width && y > 0)
-			points.Add((x + 1, y - 1));
-
-		return points;
-	}
-
-	public override void CalculatePart2()
-	{
-		var ratios = new List<int>();
-		var curNums = new List<int>();
-		for (int y = 0; y < _height; y++)
-		{
-			for (int x = 0; x <= _width; x++)
-			{
-				var cell = _data[y][x];
-				switch (cell)
-				{
-					case '*':
-						curNums.Clear();
-						FindNumbers(x, y, ref curNums);
-						if(curNums.Count == 2)
-							ratios.Add(curNums[0] * curNums[1]);
-						break;
-				}
-			}
-		}
-		Part2 = ratios.Sum();
 	}
 }
