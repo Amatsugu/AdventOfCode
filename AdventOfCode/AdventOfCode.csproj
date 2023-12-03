@@ -43,6 +43,9 @@
 	<None Remove="Problems\AOC2022\Day9\test2.txt" />
 	<None Remove="problems\aoc2023\day1\input.txt" />
 	<None Remove="problems\aoc2023\day2\input.txt" />
+	<None Remove="problems\aoc2023\day3\input.txt" />
+	<None Remove="problems\aoc2023\day3\sample.txt" />
+	<None Remove="problems\aoc2023\day3\sara.txt" />
   </ItemGroup>
 
 
