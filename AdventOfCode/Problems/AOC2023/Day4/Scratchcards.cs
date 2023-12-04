@@ -11,6 +11,7 @@ namespace AdventOfCode.Problems.AOC2023.Day4;
 internal class Scratchcards : Problem<double, int>
 {
 	private (int card, int[] win, int[] have)[] _cards = [];
+	private Dictionary<int, int> _cardCount = new ();
 
 	public override void CalculatePart1()
 	{
@@ -22,7 +23,32 @@ internal class Scratchcards : Problem<double, int>
 
 	public override void CalculatePart2()
 	{
-		throw new NotImplementedException();
+		Part2 = _cards.Length;
+		for (int i = 0; i < _cards.Length; i++)
+		{
+			var card = _cards[i];
+			var wins = card.have.Intersect(card.win).Count();
+			for (int j = 1; j <= wins; j++)
+				AddCards(card.card + j, GetCardCount(card.card));
+			Part2 += wins * GetCardCount(card.card);
+			//_cardCount[card.card] = 0;
+		}
+	}
+
+	private int GetCardCount(int card)
+	{
+		if(_cardCount.TryGetValue(card, out var count)) 
+			return count;
+		//_cardCount.Add(card, 1);
+		return 1;
+	}
+
+	private void AddCards(int card, int count)
+	{
+		if(_cardCount.ContainsKey(card))
+			_cardCount[card] += count;
+		else
+			_cardCount.Add(card, count + 1);
 	}
 
 	public override void LoadInput()
