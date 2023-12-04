@@ -41,7 +41,7 @@ public class AOCRunner
 	{
 		var problem = _loadedProblems[_selectedYear].FirstOrDefault(d => d.info.Day == day);
 		if (problem == default)
-			throw new ArgumentException($"There no problems have been loaded for the day '{day}' of year '{_selectedYear}'", nameof(day));
+			throw new ArgumentException($"There are no problems have been loaded for the day '{day}' of year '{_selectedYear}'", nameof(day));
 
 		_selectedDay = _loadedProblems[_selectedYear].IndexOf(problem);
 		return this;
@@ -50,7 +50,7 @@ public class AOCRunner
 	public AOCRunner WithYear(int year)
 	{
 		if (!_loadedProblems.ContainsKey(year))
-			throw new ArgumentException($"There no problems have been loaded for the year '{year}'", nameof(year));
+			throw new ArgumentException($"There are no problems have been loaded for the year '{year}'", nameof(year));
 		_selectedYear = year;
 		return this;
 	}
