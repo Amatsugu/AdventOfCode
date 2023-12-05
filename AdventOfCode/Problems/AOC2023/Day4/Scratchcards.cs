@@ -11,7 +11,7 @@ namespace AdventOfCode.Problems.AOC2023.Day4;
 internal class Scratchcards : Problem<double, int>
 {
 	private (int card, int[] win, int[] have)[] _cards = [];
-	private Dictionary<int, int> _cardCount = new ();
+	private readonly Dictionary<int, int> _cardCount = [];
 
 	public override void CalculatePart1()
 	{
