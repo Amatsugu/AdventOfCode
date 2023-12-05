@@ -28,10 +28,10 @@ internal class Scratchcards : Problem<double, int>
 		{
 			var card = _cards[i];
 			var wins = card.have.Intersect(card.win).Count();
+			var cCount = GetCardCount(card.card);
 			for (int j = 1; j <= wins; j++)
-				AddCards(card.card + j, GetCardCount(card.card));
-			Part2 += wins * GetCardCount(card.card);
-			//_cardCount[card.card] = 0;
+				AddCards(card.card + j, cCount);
+			Part2 += wins * cCount;
 		}
 	}
 
@@ -39,7 +39,6 @@ internal class Scratchcards : Problem<double, int>
 	{
 		if(_cardCount.TryGetValue(card, out var count)) 
 			return count;
-		//_cardCount.Add(card, 1);
 		return 1;
 	}
 
