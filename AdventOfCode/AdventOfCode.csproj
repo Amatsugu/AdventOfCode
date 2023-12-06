@@ -50,6 +50,8 @@
 	<None Remove="problems\aoc2023\day4\sample.txt" />
 	<None Remove="problems\aoc2023\day5\input.txt" />
 	<None Remove="problems\aoc2023\day5\sample.txt" />
+	<None Remove="problems\aoc2023\day6\input.txt" />
+	<None Remove="problems\aoc2023\day6\sample.txt" />
   </ItemGroup>
 
 
