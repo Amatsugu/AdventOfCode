@@ -43,9 +43,7 @@ internal class MirageMaintenance : Problem<long, long>
 		Console.WriteLine();
 
 		foreach (var item in data)
-		{
 			Console.WriteLine(string.Join(" | ", item.Select(n => n.ToString())));
-		}
 		return sum;
 	}
 

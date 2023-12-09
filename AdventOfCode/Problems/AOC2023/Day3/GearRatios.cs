@@ -69,7 +69,7 @@ internal class GearRatios : Problem<int, int>
 		foreach (var (xN, yN) in n)
 		{
 			var c = _data[yN][xN] - '0';
-			if (c >= 0)
+			if (c >= 0) //A bug exists here, I wont fix it
 			{
 				var num = GetNumber(xN, yN, out var idx);
 
