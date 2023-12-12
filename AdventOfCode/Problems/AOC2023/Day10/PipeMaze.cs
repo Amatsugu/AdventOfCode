@@ -15,29 +15,40 @@ internal class PipeMaze : Problem<int, int>
 
 	public override void LoadInput()
 	{
-		_maze = ReadInputLines();
+		_maze = ReadInputLines("sample.txt");
 	}
 
 	public override void CalculatePart1()
 	{
-		throw new NotImplementedException();
+		Console.WriteLine(GetNextPoint((1, 1), (1, 2)));
+		Console.WriteLine(GetNextPoint((1, 1), (2, 1)));
+
+		Console.WriteLine(GetNextPoint((3, 1), (3, 2)));
+		Console.WriteLine(GetNextPoint((3, 1), (2, 1)));
+
+		Console.WriteLine(GetNextPoint((3, 3), (3, 2)));
+		Console.WriteLine(GetNextPoint((3, 3), (2, 3)));
+
+		Console.WriteLine(GetNextPoint((1, 3), (1, 2)));
+		Console.WriteLine(GetNextPoint((1, 3), (2, 3)));
 	}
 
 	private (int x, int y) GetNextPoint((int x, int y) pos, (int x, int y) prev)
 	{
 		var curPipe = _maze[pos.y][pos.x];
+		var dir = (x: pos.x - prev.x, y: pos.y - prev.y);
 		if(curPipe == 'S')
 		{
 			throw new Exception();
 		}
 		return curPipe switch
 		{
-			'|' => (pos.x, pos.y + (pos.y - prev.y)),
-			'-' => (pos.x + (pos.x - prev.x), pos.y),
-			'L' => (0,0),
-			'F' => (0,0),
-			'J' => (0,0),
-			'7' => (0,0),
+			'|' => (pos.x, pos.y + dir.y),
+			'-' => (pos.x + dir.x, pos.y),
+			'L' => (pos.x + dir.y, pos.y + dir.x),
+			'F' => (pos.x - dir.y, pos.y - dir.x),
+			'J' => (pos.x - dir.y, pos.y - dir.x),
+			'7' => (pos.x + dir.y, pos.y + dir.x),
 			_ => throw new Exception()
 		};
 	}
