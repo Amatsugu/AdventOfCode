@@ -20,27 +20,71 @@ internal class PipeMaze : Problem<int, int>
 
 	public override void CalculatePart1()
 	{
-		Console.WriteLine(GetNextPoint((1, 1), (1, 2)));
-		Console.WriteLine(GetNextPoint((1, 1), (2, 1)));
+		var start = GetStartPointPos();
+		var nPoints = GetStartConnections(start);
+		var seen = new Dictionary<(int, int), int>();
 
-		Console.WriteLine(GetNextPoint((3, 1), (3, 2)));
-		Console.WriteLine(GetNextPoint((3, 1), (2, 1)));
+		foreach (var point in nPoints)
+		{
+			var curPoint = start;
+			var prevPoint = point;
+			var dist = 0;
+			while (true)
+			{
+				dist++;
+				var next = GetNextPoint(curPoint, prevPoint);
+				prevPoint = curPoint;
+				curPoint = next;
+				if (next == start)
+					break;
+				if (seen.TryGetValue(next, out var d))
+				{
+					if (d > dist)
+						seen[next] = dist;
+					else
+						break;
+				}
+				else
+					seen.Add(next, dist);
+			}
+		}
+	}
 
-		Console.WriteLine(GetNextPoint((3, 3), (3, 2)));
-		Console.WriteLine(GetNextPoint((3, 3), (2, 3)));
+	private (int x, int y) GetStartPointPos()
+	{
+		for (int y = 0; y < _maze.Length; y++)
+		{
+			var x = _maze[y].IndexOf('S');
+			if (x >= 0)
+				return (x, y);
+		}
+		throw new Exception("Start point not found");
+	}
 
-		Console.WriteLine(GetNextPoint((1, 3), (1, 2)));
-		Console.WriteLine(GetNextPoint((1, 3), (2, 3)));
+	private List<(int x, int y)> GetStartConnections((int x, int y) pos)
+	{
+		var points = new List<(int x, int y)>();
+		if (_maze[pos.y + 1][pos.x] is '|' or 'J' or 'L')
+			points.Add((pos.x + 1, pos.y));
+		if (_maze[pos.y - 1][pos.x] is '|' or 'F' or '7')
+			points.Add((pos.x - 1, pos.y));
+
+		if (_maze[pos.y][pos.x + 1] is '-' or 'J' or '7')
+			points.Add((pos.x, pos.y + 1));
+		if (_maze[pos.y][pos.x - 1] is '-' or 'F' or 'L')
+			points.Add((pos.x, pos.y - 1));
+
+		return points;
 	}
 
 	private (int x, int y) GetNextPoint((int x, int y) pos, (int x, int y) prev)
 	{
 		var curPipe = _maze[pos.y][pos.x];
 		var dir = (x: pos.x - prev.x, y: pos.y - prev.y);
-		if(curPipe == 'S')
-		{
-			throw new Exception();
-		}
+
+		if (curPipe == 'S')
+			return GetStartConnections(pos).First(p => p != prev);
+
 		return curPipe switch
 		{
 			'|' => (pos.x, pos.y + dir.y),
@@ -57,5 +101,4 @@ internal class PipeMaze : Problem<int, int>
 	{
 		throw new NotImplementedException();
 	}
-
 }
