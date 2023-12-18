@@ -15,7 +15,7 @@ internal class PipeMaze : Problem<int, int>
 
 	public override void LoadInput()
 	{
-		_maze = ReadInputLines("sample.txt");
+		_maze = ReadInputLines();
 	}
 
 	public override void CalculatePart1()
@@ -48,6 +48,8 @@ internal class PipeMaze : Problem<int, int>
 					seen.Add(next, dist);
 			}
 		}
+
+		Part1 = seen.Values.Max();
 	}
 
 	private (int x, int y) GetStartPointPos()
@@ -80,19 +82,19 @@ internal class PipeMaze : Problem<int, int>
 	private (int x, int y) GetNextPoint((int x, int y) pos, (int x, int y) prev)
 	{
 		var curPipe = _maze[pos.y][pos.x];
-		var dir = (x: pos.x - prev.x, y: pos.y - prev.y);
+		(int x, int y) = (pos.x - prev.x, pos.y - prev.y);
 
 		if (curPipe == 'S')
 			return GetStartConnections(pos).First(p => p != prev);
 
 		return curPipe switch
 		{
-			'|' => (pos.x, pos.y + dir.y),
-			'-' => (pos.x + dir.x, pos.y),
-			'L' => (pos.x + dir.y, pos.y + dir.x),
-			'F' => (pos.x - dir.y, pos.y - dir.x),
-			'J' => (pos.x - dir.y, pos.y - dir.x),
-			'7' => (pos.x + dir.y, pos.y + dir.x),
+			'|' => (pos.x, pos.y + y),
+			'-' => (pos.x + x, pos.y),
+			'L' => (pos.x + y, pos.y + x),
+			'F' => (pos.x - y, pos.y - x),
+			'J' => (pos.x - y, pos.y - x),
+			'7' => (pos.x + y, pos.y + x),
 			_ => throw new Exception()
 		};
 	}
