@@ -27,4 +27,37 @@ public static class Extensions
 		}
 		return a;
 	}
+
+	public static IEnumerable<IEnumerable<T2>> Transpose<T, T2>(this IEnumerable<T> data) where T: IEnumerable<T2>
+	{
+		var range = Enumerable.Range(0, data.First().Count());
+
+		return range.Select(i => data.Select(l => l.Skip(i).First()));
+	}
+
+	public static IEnumerable<T> Transpose<T, T2>(this IEnumerable<T> data, Func<IEnumerable<T2>, T> formatter) where T : IEnumerable<T2>
+	{
+		var range = Enumerable.Range(0, data.First().Count());
+
+		return range.Select(i => formatter(data.Select(l => l.Skip(i).First())));
+	}
+
+	public static IEnumerable<string> Transpose(this IEnumerable<string> data)
+	{
+		return Transpose<string, char>(data, a => string.Join("", a));
+	}
+
+	public static IEnumerable<List<T>> Permute<T>(this IEnumerable<T> values)
+	{
+		IEnumerable<List<T>> permutate(IEnumerable<T> reminder, IEnumerable<T> prefix)
+		{
+			return !reminder.Any()
+				? new List<List<T>> { prefix.ToList() }
+				: reminder.SelectMany((c, i) => permutate(
+					reminder.Take(i).Concat(reminder.Skip(i + 1)).ToList(),
+					prefix.Append(c)));
+		}
+		return permutate(values, Enumerable.Empty<T>());
+	}
+
 }
