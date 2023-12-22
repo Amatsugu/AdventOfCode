@@ -15,21 +15,22 @@ internal class HotSprings : Problem<int, int>
 
 	public override void CalculatePart1()
 	{
-		Console.WriteLine();
-		Console.WriteLine(Record.CheckValidity(new Record(".###...##...", [3,2,1])));
-		
-		var a = CountPossiblilites(_data[5]);
+		Part1 = _data.Select(r => CountPossiblilites(r)).Sum();
 	}
 
 	public override void CalculatePart2()
 	{
-		throw new NotImplementedException();
+		var unfolded = _data.Select(r =>
+		{
+			var unfoldData = string.Join("", Enumerable.Repeat(r.Data, 5));
+			var unfoldPattern = Enumerable.Repeat(r.Pattern, 5).SelectMany(x => x).ToArray();
+			return new Record(unfoldData, unfoldPattern);
+		}).ToArray();
+		Part2 = unfolded.Select(r => CountPossiblilites(r)).Sum();
 	}
 
-	public int CountPossiblilites(Record record, int pos = 0)
+	public static int CountPossiblilites(Record record, int pos = 0)
 	{
-		if(!record.Data.Contains('?'))
-			Console.WriteLine(record);
 		if (pos == -1 || pos >= record.Data.Length)
 			return record.IsValid ? 1 : 0;
 		if (!record.IsValid)
@@ -44,17 +45,14 @@ internal class HotSprings : Problem<int, int>
 		return CountPossiblilites(r1, pos + 1) + CountPossiblilites(r2, pos + 1);
 	}
 
-	
-
 	public override void LoadInput()
 	{
-		var data = ReadInputLines("sample.txt");
+		var data = ReadInputLines();
 
 		_data = data.Select(x => x.Split(' '))
 			.Select(x => new Record(x[0], x[1].Split(',').Select(int.Parse).ToArray()))
 			.ToArray();
 	}
-
 
 	public record Record(string Data, int[] Pattern)
 	{
@@ -67,7 +65,10 @@ internal class HotSprings : Problem<int, int>
 			for (int i = 0; i < record.Data.Length; i++)
 			{
 				var c = record.Data[i];
-				var len = section >= record.Pattern.Length - 1 ? -1 : record.Pattern[section];
+				if (section >= record.Pattern.Length)
+					return !record.Data[i..].Contains('#');
+
+				var len = record.Pattern[section];
 
 				switch (c)
 				{
@@ -75,6 +76,7 @@ internal class HotSprings : Problem<int, int>
 						if (inSection && i - start > len)
 							return false;
 						return true;
+
 					case '.':
 						if (inSection)
 						{
@@ -94,9 +96,14 @@ internal class HotSprings : Problem<int, int>
 						break;
 				}
 			}
+			if (inSection)
+			{
+				if (record.Pattern[section] != (record.Data[start..].Length))
+					return false;
+				else
+					section++;
+			}
 			if (section != record.Pattern.Length)
-				return false;
-			if (inSection && record.Pattern[section] < (record.Data.Length - 1 - start))
 				return false;
 			return true;
 		}
