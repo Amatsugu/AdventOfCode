@@ -45,6 +45,7 @@
 	<None Remove="problems\aoc2023\day10\sample.txt" />
 	<None Remove="problems\aoc2023\day11\input.txt" />
 	<None Remove="problems\aoc2023\day11\sample.txt" />
+	<None Remove="problems\aoc2023\day12\sample.txt" />
 	<None Remove="problems\aoc2023\day1\input.txt" />
 	<None Remove="problems\aoc2023\day2\input.txt" />
 	<None Remove="problems\aoc2023\day3\input.txt" />
