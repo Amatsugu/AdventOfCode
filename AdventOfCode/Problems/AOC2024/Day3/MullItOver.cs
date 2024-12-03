@@ -16,7 +16,7 @@ internal partial class MullItOver : Problem<int, int>
 	public override void CalculatePart1()
 	{
 		var matches = Mul().Matches(_data);
-		Part1 = matches.Select(m => (int.Parse(m.Groups["a"].Value), int.Parse(m.Groups["b"].Value))).Select(v => v.Item1 * v.Item2).Sum();
+		Part1 = matches.Select(m => (int.Parse(m.Groups["a"].ValueSpan), int.Parse(m.Groups["b"].ValueSpan))).Select(v => v.Item1 * v.Item2).Sum();
 	}
 
 	public override void CalculatePart2()
@@ -25,7 +25,7 @@ internal partial class MullItOver : Problem<int, int>
 		var muls = DosAndDonts().Matches(_data);
 		foreach (Match match in muls)
 		{
-			switch (match.Value)
+			switch (match.ValueSpan)
 			{
 				case ['d', 'o', 'n', ..]:
 					doing = false;
@@ -36,7 +36,7 @@ internal partial class MullItOver : Problem<int, int>
 				default:
 					if (!doing)
 						continue;
-					Part2 += int.Parse(match.Groups["a"].Value) * int.Parse(match.Groups["b"].Value);
+					Part2 += int.Parse(match.Groups["a"].ValueSpan) * int.Parse(match.Groups["b"].ValueSpan);
 					break;
 			}
 		}
