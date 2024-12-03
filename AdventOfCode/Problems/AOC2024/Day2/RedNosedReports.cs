@@ -25,7 +25,6 @@ internal class RedNosedReports : Problem<int, int>
 
 	public override void CalculatePart2()
 	{
-		//Missing 3
 		Console.WriteLine();
 		foreach (var report in _data)
 		{
