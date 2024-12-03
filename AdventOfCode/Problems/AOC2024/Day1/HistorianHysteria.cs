@@ -32,7 +32,7 @@ internal class HistorianHysteria : Problem<int, int>
 
 	public override void LoadInput()
 	{
-		var lines = ReadInputLines("input.txt");
+		var lines = ReadInputLines();
 		var data = lines.Select(l => l.Split(' ').Select(int.Parse)).ToList();
 		_left = data.Select(l => l.First()).ToArray();
 		_right = data.Select(l => l.Last()).ToArray();
