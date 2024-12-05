@@ -13,7 +13,7 @@ internal class CeresSearch : Problem<int, int>
 {
 
 	private string[] _data = [];
-	private static Pos[] dirs = [
+	private static readonly Pos[] dirs = [
 		(-1, 0),	//Left
 		(-1, -1),	//Top Left
 		(0, -1),	//Top
@@ -24,7 +24,7 @@ internal class CeresSearch : Problem<int, int>
 		(-1, 1),	//Bottom Left
 		];
 
-	private static Pos[] xdirs = [
+	private static readonly Pos[] xdirs = [
 		(-1, -1),	//Top Left
 		(1, -1),	//Top Right
 		(1, 1),		//Bottom Right
@@ -52,10 +52,10 @@ internal class CeresSearch : Problem<int, int>
 		var tgt = target[pivot];
 		var branchA = string.Join("", target[..(pivot+1)].Reverse());
 		var branchB = target[pivot..];
-		for (int y = 0; y < data.Length; y++)
+		for (int y = 1; y < data.Length-1; y++)
 		{
 			var row = data[y];
-			for (int x = 0; x < row.Length; x++)
+			for (int x = 1; x < row.Length-1; x++)
 			{
 				var c = row[x];
 				if (c == tgt)
@@ -65,11 +65,11 @@ internal class CeresSearch : Problem<int, int>
 						Pos dir = xdirs[i];
 						Pos opposingDir = xdirs[(i + 2) % xdirs.Length];
 
-						if (CheckWord(data, (x, y), dir, branchA, 1, [c]) && CheckWord(data, (x,y), opposingDir, branchB, 1, [c]))
+						if (CheckWord(data, (x, y), dir, branchA, 1) && CheckWord(data, (x,y), opposingDir, branchB, 1))
 						{
 							Pos dir2 = xdirs[(i+1) % xdirs.Length];
 							Pos opposingDir2 = xdirs[(i + 3) % xdirs.Length];
-							if (CheckWord(data, (x, y), dir2, branchA, 1, [c]) && CheckWord(data, (x, y), opposingDir2, branchB, 1, [c]))
+							if (CheckWord(data, (x, y), dir2, branchA, 1) && CheckWord(data, (x, y), opposingDir2, branchB, 1))
 								matches++;
 						}
 					}	
@@ -93,7 +93,7 @@ internal class CeresSearch : Problem<int, int>
 				{
 					foreach (var dir in dirs)
 					{
-						if(CheckWord(data, (x, y), dir, target, 1, [c]))
+						if(CheckWord(data, (x, y), dir, target, 1))
 							matches++;
 					}
 				}
@@ -102,10 +102,8 @@ internal class CeresSearch : Problem<int, int>
 		return matches;
 	}
 
-	private static bool CheckWord(string[] data, Pos pos, Pos dir, string target, int targetPos, List<char>? acc = null)
+	private static bool CheckWord(string[] data, Pos pos, Pos dir, string target, int targetPos)
 	{
-		if (acc == null)
-			acc = [];
 		Pos curPos = (pos.x + dir.x, pos.y + dir.y);
 
 
@@ -117,10 +115,9 @@ internal class CeresSearch : Problem<int, int>
 		var c = data[curPos.y][curPos.x];
 		if(c == target[targetPos])
 		{
-			acc.Add(c);
 			if (targetPos == target.Length - 1)
 				return true;
-			return CheckWord(data, curPos, dir, target, targetPos + 1, acc);
+			return CheckWord(data, curPos, dir, target, targetPos + 1);
 		}
 		return false;
 	}
