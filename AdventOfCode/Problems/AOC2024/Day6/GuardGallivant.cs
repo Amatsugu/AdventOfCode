@@ -54,7 +54,7 @@ internal class GuardGallivant : Problem<int, int>
 		return visited.ToFrozenSet();
 	}
 
-	private void PrintBoard(FrozenSet<Vec2<int>> visited, Vec2<int> pos, char[][] board)
+	private void PrintBoard(FrozenSet<Vec2<int>> visited, Vec2<int> pos, char[][] board, Vec2<int>? obsticle = null)
 	{
 		Console.WriteLine("======================");
 		for (int y = 0; y < board.Length; y++)
@@ -63,26 +63,42 @@ internal class GuardGallivant : Problem<int, int>
 			for (int x = 0; x < row.Length; x++)
 			{
 				var p = new Vec2<int>(x, y);
+				Console.ResetColor();
+				if(p == obsticle)
+				{
+					Console.ForegroundColor = ConsoleColor.Green;
+					Console.Write('O');
+					continue;
+				}
 				if (row[x] == '#')
 				{
 					Console.Write(row[x]);
 					continue;
 				}
-				if (row[x] == '^' && p != pos)
+				if (row[x] == '^')
 				{
-					if(visited.Contains(p))
+					Console.ForegroundColor = ConsoleColor.DarkBlue;
+					if(pos == p)
+					{
+						Console.Write('@');
+						continue;
+					}
+					if (visited.Contains(p))
 						Console.Write('X');
 					else
-						Console.Write('.');
+						Console.Write('S');
 				}
 				else
 				{
-					if (visited.Contains(new(x, y)))
+					if(p == pos)
+						Console.Write('@');
+					else if (visited.Contains(new(x, y)))
+					{
+						Console.ForegroundColor = ConsoleColor.DarkGray;
 						Console.Write('X');
-					else if(p == pos)
-						Console.Write('*');
+					}
 					else
-						Console.Write(row[x]);
+						Console.Write(row[x] == '.' ? ' ' : row[x]);
 				}
 			}
 			Console.WriteLine();
@@ -122,11 +138,15 @@ internal class GuardGallivant : Problem<int, int>
 
 	public override void CalculatePart2()
 	{
-		var map = new GuardMap(_data, GetStartPos());
+		var start = GetStartPos();
+		var map = new GuardMap(_data, start);
 		var path = map.GetPath();
+		var visited = path.Select(p => p.pos).ToFrozenSet();
 		foreach (var (pos, node) in path)
 		{
 			var turn = (node.Direction + 1) % 4;
+			if (pos == start && node.Direction == 0)
+				continue;
 			if(map.GetNextObstacle(pos, turn, out var next)){
 				var obstacle = new GuardNode(pos, turn);
 				var nextNode = map.Nodes.FirstOrDefault(p => p.Pos == next - DIRS[turn] && p.Direction == (turn + 1) % 4);
@@ -139,6 +159,14 @@ internal class GuardGallivant : Problem<int, int>
 						Part2++;
 					node.Next = tmp;
 				}
+				else
+				{
+					//PrintBoard(visited, pos, _data, pos + DIRS[node.Direction]);
+					//if(map.SolveNewPath(obstacle, pos + DIRS[node.Direction]))
+					//{
+					//	Part2++;
+					//}
+				}
 			}
 		}
 	}
@@ -147,7 +175,7 @@ internal class GuardGallivant : Problem<int, int>
 
 	public override void LoadInput()
 	{
-		_data = ReadInputLines("input.txt").Select(r => r.ToCharArray()).ToArray();
+		_data = ReadInputLines("shino.txt").Select(r => r.ToCharArray()).ToArray();
 		_height = _data.Length;
 		_width = _data[0].Length;
 	}
@@ -158,10 +186,10 @@ file class GuardMap
 	public GuardNode Start { get; set; }
 	public List<GuardNode> Nodes { get; set; }
 
-	private List<Vec2<int>> _obstacles = [];
+	private readonly List<Vec2<int>> _obstacles = [];
 
-	private int _height;
-	private int _width;
+	private readonly int _height;
+	private readonly int _width;
 
 	public GuardMap(char[][] map, Vec2<int> start)
 	{
@@ -261,7 +289,7 @@ file class GuardMap
 		};
 		while (true)
 		{
-			if (nodes.Count > 8)
+			if (nodes.Count > 4)
 				return false;
 			if (!GetNextObstacle(curNode.Pos, curNode.Direction, out var next, extraObsticle))
 				return false;
