@@ -53,7 +53,44 @@ internal class GuardGallivant : Problem<int, int>
 		return visited.ToFrozenSet();
 	}
 
-	private void PrintBoard(FrozenSet<Vec2<int>> visited, Vec2<int> pos, char[][] board, Vec2<int>? obsticle = null)
+	public static void PrintBoard(FrozenSet<Vec2<int>> visited, Vec2<int> pos, bool[][] board, Vec2<int>? obsticle = null)
+	{
+		Console.WriteLine("======================");
+		for (int y = 0; y < board.Length; y++)
+		{
+			var row = board[y];
+			for (int x = 0; x < row.Length; x++)
+			{
+				var p = new Vec2<int>(x, y);
+				Console.ResetColor();
+				if (p == obsticle)
+				{
+					Console.ForegroundColor = ConsoleColor.Green;
+					Console.Write('O');
+					continue;
+				}
+				if (row[x])
+				{
+					Console.Write('#');
+					continue;
+				}else
+				{
+					if (p == pos)
+						Console.Write('@');
+					else if (visited.Contains(new(x, y)))
+					{
+						Console.ForegroundColor = ConsoleColor.DarkGray;
+						Console.Write('X');
+					}
+					else
+						Console.Write(' ');
+				}
+			}
+			Console.WriteLine();
+		}
+	}
+
+	public static void PrintBoard(FrozenSet<Vec2<int>> visited, Vec2<int> pos, char[][] board, Vec2<int>? obsticle = null)
 	{
 		Console.WriteLine("======================");
 		for (int y = 0; y < board.Length; y++)
@@ -178,7 +215,7 @@ internal class GuardGallivant : Problem<int, int>
 
 	public override void LoadInput()
 	{
-		_data = ReadInputLines("sample.txt").Select(r => r.ToCharArray()).ToArray();
+		_data = ReadInputLines("input.txt").Select(r => r.ToCharArray()).ToArray();
 		_height = _data.Length;
 		_width = _data[0].Length;
 	}
@@ -204,15 +241,26 @@ file class GuardMap
 
 	public List<(Vec2<int> pos, GuardNode node)> GetPath()
 	{
+		return GetPath(Nodes);
+	}
+
+	public FrozenSet<Vec2<int>> GetPathSet(List<GuardNode> nodes)
+	{
+		var path = GetPath(nodes);
+		return path.Select(p => p.pos).ToFrozenSet();
+	}
+
+	public List<(Vec2<int> pos, GuardNode node)> GetPath(List<GuardNode> nodes)
+	{
 		var path = new List<(Vec2<int>, GuardNode)>();
 
-		var curNode = Nodes[0];
+		var curNode = nodes[0];
 		while (true)
 		{
 
 			if (curNode.Next is int nextId)
 			{ 
-				var next = Nodes[nextId];
+				var next = nodes[nextId];
 				path.AddRange(GetPointsBetween(curNode.Pos, next.Pos, curNode.Direction).Select(p => (p, curNode)));
 				curNode = next;
 			}
@@ -283,13 +331,14 @@ file class GuardMap
 		nodes.Add(start);
 		while (true)
 		{
-			//if (nodes.Count > 4)
-			//	return false;
 			if (!GetNextObstacle(curNode.Pos, curNode.Direction, out var next, extraObsticle))
 				return false;
 			var newNode = new GuardNode(next - GuardGallivant.DIRS[curNode.Direction], (curNode.Direction + 1) % 4, nodes.Count);
 			if (nodes.Any(n => n.Pos == newNode.Pos && n.Direction == newNode.Direction))
+			{
+				//GuardGallivant.PrintBoard(GetPathSet(nodes), start.Pos, _map, extraObsticle);
 				return true;
+			}
 			curNode.Next = newNode.Id;
 			nodes[curNode.Id] = curNode;
 			curNode = newNode;
@@ -359,6 +408,7 @@ file class GuardMap
 			if (extraObsticle is Vec2<int> ex)
 				_map[ex.Y][ex.X] = false;
 		}
+		ResetExtraObsticle();
 		return false;
 	}
 }
