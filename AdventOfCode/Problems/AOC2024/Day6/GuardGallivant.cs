@@ -28,12 +28,12 @@ internal class GuardGallivant : Problem<int, int>
 	{
 		var map = new GuardMap(_data, GetStartPos());
 		Part1 = map.GetPath().DistinctBy(p => p.pos).Count();
+		//PrintBoard(map.GetPath().Select(p => p.pos).ToFrozenSet(), GetStartPos(), _data);
 	}
 
-	private FrozenSet<(Vec2<int> pos, int dir)> GetVisited(out List<Turn> turns)
+	private FrozenSet<(Vec2<int> pos, int dir)> GetVisited()
 	{
 		var visited = new HashSet<(Vec2<int> pos, int dir)>();
-		turns = [];
 		var pos = GetStartPos();
 		var dir = 0;
 		var step = 0;
@@ -45,7 +45,6 @@ internal class GuardGallivant : Problem<int, int>
 				pos += curDir;
 			else
 			{
-				turns.Add((pos, dir, step));
 				dir = (dir + 1) % DIRS.Length;
 			}
 			step++;
@@ -142,31 +141,35 @@ internal class GuardGallivant : Problem<int, int>
 		var map = new GuardMap(_data, start);
 		var path = map.GetPath();
 		var visited = path.Select(p => p.pos).ToFrozenSet();
+		var nodes = new List<GuardNode>();
 		foreach (var (pos, node) in path)
 		{
 			var turn = (node.Direction + 1) % 4;
 			if (pos == start && node.Direction == 0)
 				continue;
 			if(map.GetNextObstacle(pos, turn, out var next)){
-				var obstacle = new GuardNode(pos, turn);
-				var nextNode = map.Nodes.FirstOrDefault(p => p.Pos == next - DIRS[turn] && p.Direction == (turn + 1) % 4);
-				if(nextNode != null)
-				{
-					var tmp = node.Next;
-					node.Next = obstacle;
-					obstacle.Next = nextNode;
-					if(obstacle.IsLoop())
+				var obstacleNode = new GuardNode(pos, turn, 0);
+				var obstaclePos = pos + DIRS[node.Direction];
+				if (!IsInBounds(obstaclePos))
+					continue;
+				//var nextNode = map.Nodes.FirstOrDefault(p => p.Pos == next - DIRS[turn] && p.Direction == (turn + 1) % 4);
+				//if(nextNode != null)
+				//{
+				//	var tmp = node.Next;
+				//	node.Next = obstacle;
+				//	obstacle.Next = nextNode;
+				//	if(obstacle.IsLoop())
+				//		Part2++;
+				//	node.Next = tmp;
+				//}
+				//else
+				//{
+				//PrintBoard(visited, pos, _data, pos + DIRS[node.Direction]);
+					if (map.SolveNewPath(obstacleNode, pos + DIRS[node.Direction], nodes))
+					{
 						Part2++;
-					node.Next = tmp;
-				}
-				else
-				{
-					//PrintBoard(visited, pos, _data, pos + DIRS[node.Direction]);
-					//if(map.SolveNewPath(obstacle, pos + DIRS[node.Direction]))
-					//{
-					//	Part2++;
-					//}
-				}
+					}
+				//}
 			}
 		}
 	}
@@ -175,7 +178,7 @@ internal class GuardGallivant : Problem<int, int>
 
 	public override void LoadInput()
 	{
-		_data = ReadInputLines("shino.txt").Select(r => r.ToCharArray()).ToArray();
+		_data = ReadInputLines("sample.txt").Select(r => r.ToCharArray()).ToArray();
 		_height = _data.Length;
 		_width = _data[0].Length;
 	}
@@ -183,21 +186,19 @@ internal class GuardGallivant : Problem<int, int>
 
 file class GuardMap
 {
-	public GuardNode Start { get; set; }
 	public List<GuardNode> Nodes { get; set; }
-
-	private readonly List<Vec2<int>> _obstacles = [];
+	private readonly bool[][] _map;
 
 	private readonly int _height;
 	private readonly int _width;
 
 	public GuardMap(char[][] map, Vec2<int> start)
 	{
+		_map = map.Select(r => r.Select(c => c == '#' ? true : false).ToArray()).ToArray();
 		_height = map.Length;
 		_width = map[0].Length;
-		Start = new GuardNode(start, 0);
-		Nodes = [Start];
-		FindObstacles(map);
+		var startNode = new GuardNode(start, 0, 0);
+		Nodes = [startNode];
 		Solve();
 	}
 
@@ -205,11 +206,17 @@ file class GuardMap
 	{
 		var path = new List<(Vec2<int>, GuardNode)>();
 
-		var curNode = Start;
+		var curNode = Nodes[0];
 		while (true)
 		{
 
-			if (curNode.Next == null)
+			if (curNode.Next is int nextId)
+			{ 
+				var next = Nodes[nextId];
+				path.AddRange(GetPointsBetween(curNode.Pos, next.Pos, curNode.Direction).Select(p => (p, curNode)));
+				curNode = next;
+			}
+			else
 			{
 				var end = curNode.Direction switch
 				{
@@ -222,8 +229,6 @@ file class GuardMap
 				path.AddRange(GetPointsBetween(curNode.Pos, end, curNode.Direction).Select(p => (p, curNode)));
 				break;
 			}
-			path.AddRange(GetPointsBetween(curNode.Pos, curNode.Next.Pos, curNode.Direction).Select(p => (p, curNode)));
-			curNode = curNode.Next;
 		}
 
 		return path;
@@ -255,118 +260,134 @@ file class GuardMap
 		return result;
 	}
 
-	private void FindObstacles(char[][] map)
-	{
-		for (int y = 0; y < map.Length; y++)
-		{
-			for (int x = 0; x < map[0].Length; x++)
-			{
-				if (map[y][x] == '#')
-					_obstacles.Add(new(x, y));
-			}
-		}
-	}
 
 	private void Solve()
 	{
-		var curNode = Start;
+		var curNode = Nodes[0];
 		while (true)
 		{
 			if(!GetNextObstacle(curNode.Pos, curNode.Direction, out var next))
 				break;
-			curNode.Next = new GuardNode(next - GuardGallivant.DIRS[curNode.Direction], (curNode.Direction + 1) % 4);
-			curNode = curNode.Next;
-			Nodes.Add(curNode);
+			var newNode = new GuardNode(next - GuardGallivant.DIRS[curNode.Direction], (curNode.Direction + 1) % 4, Nodes.Count);
+			curNode.Next = newNode.Id;
+			Nodes[curNode.Id] = curNode;
+			Nodes.Add(newNode);
+			curNode = newNode;
 		}
 	}
 
-	public bool SolveNewPath(GuardNode start, Vec2<int> extraObsticle)
+	public bool SolveNewPath(GuardNode start, Vec2<int> extraObsticle, List<GuardNode> nodes)
 	{
 		var curNode = start;
-		var nodes = new List<GuardNode>()
-		{
-			start
-		};
+		nodes.Clear();
+		nodes.Add(start);
 		while (true)
 		{
-			if (nodes.Count > 4)
-				return false;
+			//if (nodes.Count > 4)
+			//	return false;
 			if (!GetNextObstacle(curNode.Pos, curNode.Direction, out var next, extraObsticle))
 				return false;
-			var newNode = new GuardNode(next - GuardGallivant.DIRS[curNode.Direction], (curNode.Direction + 1) % 4);
+			var newNode = new GuardNode(next - GuardGallivant.DIRS[curNode.Direction], (curNode.Direction + 1) % 4, nodes.Count);
 			if (nodes.Any(n => n.Pos == newNode.Pos && n.Direction == newNode.Direction))
 				return true;
-			curNode.Next = newNode;
-			curNode = curNode.Next;
+			curNode.Next = newNode.Id;
+			nodes[curNode.Id] = curNode;
+			curNode = newNode;
+			nodes.Add(newNode);
 		}
 	}
 
 	public bool GetNextObstacle(Vec2<int> start, int dir, out Vec2<int> pos, Vec2<int>? extraObsticle = null)
 	{
-		var obstacles = extraObsticle != null ? _obstacles.Append((Vec2<int>)extraObsticle) : _obstacles;
+		if (extraObsticle is Vec2<int> ex)
+			_map[ex.Y][ex.X] = true;
 		pos = default;
+
+		var (sX, sY) = start;
 		switch (dir)
 		{
 			case 0:
-				var up = obstacles.Where(o => o.X == start.X && o.Y < start.Y);
-				if (up.Any())
+				for (int y = sY; y >= 0; y--)
 				{
-					pos = up.MaxBy(o => o.Y);
-					return true;
+					if (_map[y][sX])
+					{
+						pos = new(sX, y);
+						ResetExtraObsticle();
+						return true;
+					}
 				}
 				break;
 			case 1:
-				var right = obstacles.Where(o => o.Y == start.Y && o.X > start.X);
-				if (right.Any())
+				var rowRight = _map[sY];
+				for (int x = sX; x < _width; x++)
 				{
-					pos = right.MinBy(o => o.X);
-					return true;
+					if (rowRight[x])
+					{
+						pos = new(x, sY);
+						ResetExtraObsticle();
+						return true;
+					}
 				}
 				break;
 			case 2:
-				var down = obstacles.Where(o => o.X == start.X && o.Y > start.Y);
-				if (down.Any())
+				for (int y = sY; y < _height; y++)
 				{
-					pos = down.MinBy(o => o.Y);
-					return true;
+					if (_map[y][sX])
+					{
+						pos = new(sX, y);
+						ResetExtraObsticle();
+						return true;
+					}
 				}
 				break;
 			case 3:
-				var left = obstacles.Where(o => o.Y == start.Y && o.X < start.X);
-				if (left.Any())
+				var rowLeft = _map[sY];
+				for (int x = sX; x >= 0; x--)
 				{
-					pos = left.MaxBy(o => o.X);
-					return true;
+					if (rowLeft[x])
+					{
+						pos = new(x, sY);
+						ResetExtraObsticle();
+						return true;
+					}
 				}
 				break;
+		}
+
+		void ResetExtraObsticle()
+		{
+			if (extraObsticle is Vec2<int> ex)
+				_map[ex.Y][ex.X] = false;
 		}
 		return false;
 	}
 }
 
-file class GuardNode
+file struct GuardNode
 {
+	public int Id { get; private set; }
 	public Vec2<int> Pos { get; }
 	public int Direction { get; }
-	public GuardNode? Next { get; set; }
-	public GuardNode(Vec2<int> pos, int dir)
+	public int? Next { get; set; }
+	public GuardNode(Vec2<int> pos, int dir, int id)
 	{
 		Pos = pos;
 		Direction = dir;
+		Id = id;
 	}
 
-	public bool IsLoop()
+	public bool IsLoop(List<GuardNode> nodes)
 	{
-		return NodeExists(this);
+		return NodeExists(Id, nodes);
 	}
 
-	public bool NodeExists(GuardNode target)
+	public bool NodeExists(int target, List<GuardNode> nodes)
 	{
-		if (Next == null)
-			return false;
 		if (Next == target)
 			return true;
-		return Next.NodeExists(target);
+		if (Next is int id)
+			return nodes[id].NodeExists(target, nodes);
+		return false;
 	}
 
 	public override string ToString()
