@@ -7,6 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using Turn = (AdventOfCode.Utils.Models.Vec2<int> pos, int dir, int step);
 
 namespace AdventOfCode.Problems.AOC2024.Day6;
@@ -73,7 +74,8 @@ internal class GuardGallivant : Problem<int, int>
 				{
 					Console.Write('#');
 					continue;
-				}else
+				}
+				else
 				{
 					if (p == pos)
 						Console.Write('@');
@@ -100,7 +102,7 @@ internal class GuardGallivant : Problem<int, int>
 			{
 				var p = new Vec2<int>(x, y);
 				Console.ResetColor();
-				if(p == obsticle)
+				if (p == obsticle)
 				{
 					Console.ForegroundColor = ConsoleColor.Green;
 					Console.Write('O');
@@ -114,7 +116,7 @@ internal class GuardGallivant : Problem<int, int>
 				if (row[x] == '^')
 				{
 					Console.ForegroundColor = ConsoleColor.DarkBlue;
-					if(pos == p)
+					if (pos == p)
 					{
 						Console.Write('@');
 						continue;
@@ -126,7 +128,7 @@ internal class GuardGallivant : Problem<int, int>
 				}
 				else
 				{
-					if(p == pos)
+					if (p == pos)
 						Console.Write('@');
 					else if (visited.Contains(new(x, y)))
 					{
@@ -144,7 +146,7 @@ internal class GuardGallivant : Problem<int, int>
 	private bool CanMove(Vec2<int> pos, Vec2<int> dir, char[][] board)
 	{
 		var p = pos + dir;
-		if(IsInBounds(p))
+		if (IsInBounds(p))
 			return board[p.Y][p.X] == '.' || board[p.Y][p.X] == '^';
 		return true;
 	}
@@ -157,7 +159,7 @@ internal class GuardGallivant : Problem<int, int>
 			for (int x = 0; x < row.Length; x++)
 			{
 				if (row[x] == '^')
-					return new (x, y);
+					return new(x, y);
 			}
 		}
 		throw new Exception("Start Position not found");
@@ -179,43 +181,37 @@ internal class GuardGallivant : Problem<int, int>
 		var path = map.GetPath();
 		var visited = path.Select(p => p.pos).ToFrozenSet();
 		var nodes = new List<GuardNode>();
+		var found = new HashSet<Vec2<int>>();
 		foreach (var (pos, node) in path)
 		{
 			var turn = (node.Direction + 1) % 4;
-			if (pos == start && node.Direction == 0)
+			if (pos == start)
 				continue;
-			if(map.GetNextObstacle(pos, turn, out var next)){
+			if (map.GetNextObstacle(pos, turn, out var next))
+			{
 				var obstacleNode = new GuardNode(pos, turn, 0);
 				var obstaclePos = pos + DIRS[node.Direction];
 				if (!IsInBounds(obstaclePos))
 					continue;
-				//var nextNode = map.Nodes.FirstOrDefault(p => p.Pos == next - DIRS[turn] && p.Direction == (turn + 1) % 4);
-				//if(nextNode != null)
-				//{
-				//	var tmp = node.Next;
-				//	node.Next = obstacle;
-				//	obstacle.Next = nextNode;
-				//	if(obstacle.IsLoop())
-				//		Part2++;
-				//	node.Next = tmp;
-				//}
-				//else
-				//{
-				//PrintBoard(visited, pos, _data, pos + DIRS[node.Direction]);
-					if (map.SolveNewPath(obstacleNode, pos + DIRS[node.Direction], nodes))
+				if (map.SolveNewPath(obstacleNode, pos + DIRS[node.Direction], nodes))
+				{
+					if (!found.Contains(obstaclePos))
 					{
 						Part2++;
+						//map.PrintBoard(nodes, pos, obstaclePos);
+						//Console.ReadLine();
 					}
+					found.Add(obstaclePos);
+
+				}
 				//}
 			}
 		}
 	}
 
-
-
 	public override void LoadInput()
 	{
-		_data = ReadInputLines("sample.txt").Select(r => r.ToCharArray()).ToArray();
+		_data = ReadInputLines("input.txt").Select(r => r.ToCharArray()).ToArray();
 		_height = _data.Length;
 		_width = _data[0].Length;
 	}
@@ -257,9 +253,8 @@ file class GuardMap
 		var curNode = nodes[0];
 		while (true)
 		{
-
 			if (curNode.Next is int nextId)
-			{ 
+			{
 				var next = nodes[nextId];
 				path.AddRange(GetPointsBetween(curNode.Pos, next.Pos, curNode.Direction).Select(p => (p, curNode)));
 				curNode = next;
@@ -291,14 +286,17 @@ file class GuardMap
 				for (int i = start.Y; i > end.Y; i--)
 					result.Add(new Vec2<int>(start.X, i));
 				break;
+
 			case 1:
 				for (int i = start.X; i < end.X; i++)
 					result.Add(new Vec2<int>(i, start.Y));
 				break;
+
 			case 2:
 				for (int i = start.Y; i < end.Y; i++)
 					result.Add(new Vec2<int>(start.X, i));
 				break;
+
 			case 3:
 				for (int i = start.X; i > end.X; i--)
 					result.Add(new Vec2<int>(i, start.Y));
@@ -308,13 +306,12 @@ file class GuardMap
 		return result;
 	}
 
-
 	private void Solve()
 	{
 		var curNode = Nodes[0];
 		while (true)
 		{
-			if(!GetNextObstacle(curNode.Pos, curNode.Direction, out var next))
+			if (!GetNextObstacle(curNode.Pos, curNode.Direction, out var next))
 				break;
 			var newNode = new GuardNode(next - GuardGallivant.DIRS[curNode.Direction], (curNode.Direction + 1) % 4, Nodes.Count);
 			curNode.Next = newNode.Id;
@@ -336,7 +333,6 @@ file class GuardMap
 			var newNode = new GuardNode(next - GuardGallivant.DIRS[curNode.Direction], (curNode.Direction + 1) % 4, nodes.Count);
 			if (nodes.Any(n => n.Pos == newNode.Pos && n.Direction == newNode.Direction))
 			{
-				//GuardGallivant.PrintBoard(GetPathSet(nodes), start.Pos, _map, extraObsticle);
 				return true;
 			}
 			curNode.Next = newNode.Id;
@@ -366,6 +362,7 @@ file class GuardMap
 					}
 				}
 				break;
+
 			case 1:
 				var rowRight = _map[sY];
 				for (int x = sX; x < _width; x++)
@@ -378,6 +375,7 @@ file class GuardMap
 					}
 				}
 				break;
+
 			case 2:
 				for (int y = sY; y < _height; y++)
 				{
@@ -389,6 +387,7 @@ file class GuardMap
 					}
 				}
 				break;
+
 			case 3:
 				var rowLeft = _map[sY];
 				for (int x = sX; x >= 0; x--)
@@ -410,6 +409,65 @@ file class GuardMap
 		}
 		ResetExtraObsticle();
 		return false;
+	}
+
+	public void PrintBoard(List<GuardNode> nodes, Vec2<int> start, Vec2<int>? extraObsticle = null)
+	{
+		var path = GetPathSet(nodes);
+		for (int y = 0; y < _height; y++)
+		{
+			for (int x = 0; x < _width; x++)
+			{
+				Console.ResetColor();
+				var p = new Vec2<int>(x, y);
+				var node = nodes.FirstOrDefault(n => n.Pos == p, new GuardNode(p, 0, -1));
+				if (node.Id != -1)
+				{
+					Console.ForegroundColor = ConsoleColor.Green;
+					if(node.Id == 0)
+						Console.ForegroundColor = ConsoleColor.Yellow;
+					else if (node.Id == nodes.Count - 1)
+						Console.ForegroundColor = ConsoleColor.Red;
+					switch (node.Direction)
+					{
+						case 0:
+							Console.Write('^');
+							break;
+
+						case 1:
+							Console.Write('>');
+							break;
+
+						case 2: 
+							Console.Write('v');
+							break;
+						case 3:
+							Console.Write('<');
+							break;
+					}
+					continue;
+				}
+				if(p == start)
+				{
+					Console.ForegroundColor = ConsoleColor.Magenta;
+					Console.Write('S');
+				}
+				if (_map[y][x])
+					Console.Write('#');
+				else if(p == extraObsticle)
+				{
+					Console.ForegroundColor = ConsoleColor.DarkBlue;
+					Console.Write('$');
+				}else if (path.Contains(p))
+				{
+					Console.ForegroundColor = ConsoleColor.DarkGray;
+					Console.Write('.');
+				}
+				else
+					Console.Write(' ');
+			}
+			Console.WriteLine();
+		}
 	}
 }
 
