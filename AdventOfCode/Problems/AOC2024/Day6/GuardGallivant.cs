@@ -215,7 +215,7 @@ internal class GuardGallivant : Problem<int, int>
 
 	public override void LoadInput()
 	{
-		_data = ReadInputLines("input.txt").Select(r => r.ToCharArray()).ToArray();
+		_data = ReadInputLines("sample.txt").Select(r => r.ToCharArray()).ToArray();
 		_height = _data.Length;
 		_width = _data[0].Length;
 	}
