@@ -38,7 +38,7 @@ internal class BridgeRepair : Problem<ulong, ulong>
 
 	private static bool IsSolvable(ulong target, ulong[] nums, Operator curOperator, ulong curTotal, Operator[] ops, int idx = 1)
 	{
-		if (target == curTotal)
+		if (target == curTotal && idx == nums.Length)
 			return true;
 		if (curTotal > target)
 			return false;
