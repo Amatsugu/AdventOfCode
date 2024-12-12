@@ -29,151 +29,9 @@ internal class GuardGallivant : Problem<int, int>
 	{
 		var map = new GuardMap(_data, GetStartPos());
 		Part1 = map.GetPath().DistinctBy(p => p.pos).Count();
-		//PrintBoard(map.GetPath().Select(p => p.pos).ToFrozenSet(), GetStartPos(), _data);
 	}
 
-	private FrozenSet<(Vec2<int> pos, int dir)> GetVisited()
-	{
-		var visited = new HashSet<(Vec2<int> pos, int dir)>();
-		var pos = GetStartPos();
-		var dir = 0;
-		var step = 0;
-		while (IsInBounds(pos))
-		{
-			var curDir = DIRS[dir];
-			visited.Add((pos, dir));
-			if (CanMove(pos, curDir, _data))
-				pos += curDir;
-			else
-			{
-				dir = (dir + 1) % DIRS.Length;
-			}
-			step++;
-		}
-		//PrintBoard(visited.Select(v => v.pos).ToFrozenSet(), pos, _data);
-		return visited.ToFrozenSet();
-	}
-
-	public static void PrintBoard(FrozenSet<Vec2<int>> visited, Vec2<int> pos, bool[][] board, Vec2<int>? obsticle = null)
-	{
-		Console.WriteLine("======================");
-		for (int y = 0; y < board.Length; y++)
-		{
-			var row = board[y];
-			for (int x = 0; x < row.Length; x++)
-			{
-				var p = new Vec2<int>(x, y);
-				Console.ResetColor();
-				if (p == obsticle)
-				{
-					Console.ForegroundColor = ConsoleColor.Green;
-					Console.Write('O');
-					continue;
-				}
-				if (row[x])
-				{
-					Console.Write('#');
-					continue;
-				}
-				else
-				{
-					if (p == pos)
-						Console.Write('@');
-					else if (visited.Contains(new(x, y)))
-					{
-						Console.ForegroundColor = ConsoleColor.DarkGray;
-						Console.Write('X');
-					}
-					else
-						Console.Write(' ');
-				}
-			}
-			Console.WriteLine();
-		}
-	}
-
-	public static void PrintBoard(FrozenSet<Vec2<int>> visited, Vec2<int> pos, char[][] board, Vec2<int>? obsticle = null)
-	{
-		Console.WriteLine("======================");
-		for (int y = 0; y < board.Length; y++)
-		{
-			var row = board[y];
-			for (int x = 0; x < row.Length; x++)
-			{
-				var p = new Vec2<int>(x, y);
-				Console.ResetColor();
-				if (p == obsticle)
-				{
-					Console.ForegroundColor = ConsoleColor.Green;
-					Console.Write('O');
-					continue;
-				}
-				if (row[x] == '#')
-				{
-					Console.Write(row[x]);
-					continue;
-				}
-				if (row[x] == '^')
-				{
-					Console.ForegroundColor = ConsoleColor.DarkBlue;
-					if (pos == p)
-					{
-						Console.Write('@');
-						continue;
-					}
-					if (visited.Contains(p))
-						Console.Write('X');
-					else
-						Console.Write('S');
-				}
-				else
-				{
-					if (p == pos)
-						Console.Write('@');
-					else if (visited.Contains(new(x, y)))
-					{
-						Console.ForegroundColor = ConsoleColor.DarkGray;
-						Console.Write('X');
-					}
-					else
-						Console.Write(row[x] == '.' ? ' ' : row[x]);
-				}
-			}
-			Console.WriteLine();
-		}
-	}
-
-	private bool CanMove(Vec2<int> pos, Vec2<int> dir, char[][] board)
-	{
-		var p = pos + dir;
-		if (IsInBounds(p))
-			return board[p.Y][p.X] == '.' || board[p.Y][p.X] == '^';
-		return true;
-	}
-
-	private Vec2<int> GetStartPos()
-	{
-		for (int y = 0; y < _data.Length; y++)
-		{
-			var row = _data[y];
-			for (int x = 0; x < row.Length; x++)
-			{
-				if (row[x] == '^')
-					return new(x, y);
-			}
-		}
-		throw new Exception("Start Position not found");
-	}
-
-	private bool IsInBounds(Vec2<int> pos)
-	{
-		if (pos.X < 0 || pos.Y < 0)
-			return false;
-		if (pos.X >= _width || pos.Y >= _height)
-			return false;
-		return true;
-	}
-
+	//this does not work
 	public override void CalculatePart2()
 	{
 		var start = GetStartPos();
@@ -202,10 +60,32 @@ internal class GuardGallivant : Problem<int, int>
 						//Console.ReadLine();
 					}
 					found.Add(obstaclePos);
-
 				}
 			}
 		}
+	}
+
+	private Vec2<int> GetStartPos()
+	{
+		for (int y = 0; y < _data.Length; y++)
+		{
+			var row = _data[y];
+			for (int x = 0; x < row.Length; x++)
+			{
+				if (row[x] == '^')
+					return new(x, y);
+			}
+		}
+		throw new Exception("Start Position not found");
+	}
+
+	private bool IsInBounds(Vec2<int> pos)
+	{
+		if (pos.X < 0 || pos.Y < 0)
+			return false;
+		if (pos.X >= _width || pos.Y >= _height)
+			return false;
+		return true;
 	}
 
 	public override void LoadInput()
@@ -258,7 +138,7 @@ file class GuardMap
 				path.AddRange(GetPointsBetween(curNode.Pos, next.Pos, curNode.Direction).Select(p => (p, curNode)));
 				curNode = next;
 			}
-			else if(curNode.Next == -1)
+			else if (curNode.Next == -1)
 			{
 				var end = curNode.Direction switch
 				{
@@ -270,7 +150,8 @@ file class GuardMap
 				};
 				path.AddRange(GetPointsBetween(curNode.Pos, end, curNode.Direction).Select(p => (p, curNode)));
 				break;
-			}else
+			}
+			else
 				break;
 		}
 
@@ -428,7 +309,7 @@ file class GuardMap
 				if (node.Id != -1)
 				{
 					Console.ForegroundColor = ConsoleColor.Green;
-					if(node.Id == 0)
+					if (node.Id == 0)
 						Console.ForegroundColor = ConsoleColor.Yellow;
 					else if (node.Id == nodes.Count - 1)
 						Console.ForegroundColor = ConsoleColor.Red;
@@ -442,27 +323,29 @@ file class GuardMap
 							Console.Write('>');
 							break;
 
-						case 2: 
+						case 2:
 							Console.Write('v');
 							break;
+
 						case 3:
 							Console.Write('<');
 							break;
 					}
 					continue;
 				}
-				if(p == start)
+				if (p == start)
 				{
 					Console.ForegroundColor = ConsoleColor.Magenta;
 					Console.Write('S');
 				}
 				if (_map[y][x])
 					Console.Write('#');
-				else if(p == extraObsticle)
+				else if (p == extraObsticle)
 				{
 					Console.ForegroundColor = ConsoleColor.DarkBlue;
 					Console.Write('$');
-				}else if (path.Contains(p))
+				}
+				else if (path.Contains(p))
 				{
 					Console.ForegroundColor = ConsoleColor.DarkGray;
 					Console.Write('.');
