@@ -204,7 +204,6 @@ internal class GuardGallivant : Problem<int, int>
 					found.Add(obstaclePos);
 
 				}
-				//}
 			}
 		}
 	}
@@ -253,13 +252,13 @@ file class GuardMap
 		var curNode = nodes[0];
 		while (true)
 		{
-			if (curNode.Next is int nextId)
+			if (curNode.Next is int nextId && nextId >= 0)
 			{
 				var next = nodes[nextId];
 				path.AddRange(GetPointsBetween(curNode.Pos, next.Pos, curNode.Direction).Select(p => (p, curNode)));
 				curNode = next;
 			}
-			else
+			else if(curNode.Next == -1)
 			{
 				var end = curNode.Direction switch
 				{
@@ -271,7 +270,8 @@ file class GuardMap
 				};
 				path.AddRange(GetPointsBetween(curNode.Pos, end, curNode.Direction).Select(p => (p, curNode)));
 				break;
-			}
+			}else
+				break;
 		}
 
 		return path;
@@ -312,7 +312,11 @@ file class GuardMap
 		while (true)
 		{
 			if (!GetNextObstacle(curNode.Pos, curNode.Direction, out var next))
+			{
+				curNode.Next = -1;
+				Nodes[curNode.Id] = curNode;
 				break;
+			}
 			var newNode = new GuardNode(next - GuardGallivant.DIRS[curNode.Direction], (curNode.Direction + 1) % 4, Nodes.Count);
 			curNode.Next = newNode.Id;
 			Nodes[curNode.Id] = curNode;
