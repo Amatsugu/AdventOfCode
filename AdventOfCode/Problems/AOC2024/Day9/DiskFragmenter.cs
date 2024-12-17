@@ -191,7 +191,7 @@ internal class DiskFragmenter : Problem<long, long>
 			else if (idx - 1 > 0 && blocks[idx - 1].isEmpty)
 			{
 				blocks[idx - 1].length += block.length;
-
+				blocks.RemoveAt(idx);
 			}
 			//Insert new Empty Block
 			else
