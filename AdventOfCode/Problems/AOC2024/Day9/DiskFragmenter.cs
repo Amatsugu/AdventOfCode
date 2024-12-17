@@ -22,7 +22,16 @@ internal class DiskFragmenter : Problem<long, long>
 	public override void CalculatePart2()
 	{
 		var blocks = ExpandBlocks(_data);
+		var empty = blocks.Where(b => b.isEmpty).Sum(b => b.length);
+		var files = blocks.Where(b => !b.isEmpty).Sum(b => b.length);
 		CompactV2(blocks);
+		var empty2 = blocks.Where(b => b.isEmpty).Sum(b => b.length);
+		var files2 = blocks.Where(b => !b.isEmpty).Sum(b => b.length);
+
+		if (empty != empty2)
+			Console.WriteLine("Empty space does not match");
+		if (files != files2)
+			Console.WriteLine($"Files space does not match Befor: {files} -> {files2}");
 		//Print(blocks);
 		// Too High: 8838426222802
 		Part2 = ComputeHashV2(blocks);
@@ -174,10 +183,16 @@ internal class DiskFragmenter : Problem<long, long>
 			}
 			//Extend Right Block
 			else if (idx + 1 < blocks.Count && blocks[idx + 1].isEmpty)
+			{
 				blocks[idx + 1].length += block.length;
+				blocks.RemoveAt(idx);
+			}
 			//Extend Left Block
 			else if (idx - 1 > 0 && blocks[idx - 1].isEmpty)
+			{
 				blocks[idx - 1].length += block.length;
+
+			}
 			//Insert new Empty Block
 			else
 				blocks[idx] = new Block(block.length);
