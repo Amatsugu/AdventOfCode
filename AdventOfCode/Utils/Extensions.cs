@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 namespace AdventOfCode.Utils;
 public static class Extensions
 {
-	public static string AsJoinedString(this object[] data, string delim = ", ")
+
+
+	public static string AsJoinedString<T>(this IEnumerable<T> data, string delim = ", ")
 	{
 		return string.Join(delim, data);
 	}
