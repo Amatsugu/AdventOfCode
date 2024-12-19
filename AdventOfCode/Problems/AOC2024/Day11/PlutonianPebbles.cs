@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,16 +16,35 @@ namespace AdventOfCode.Problems.AOC2024.Day11;
 public class PlutonianPebbles : Problem<long, long>
 {
 	private List<long> _data = [];
+	private Dictionary<(long, long), long> _depthLookup = [];
 
 	public override void CalculatePart1()
 	{
-		Part1 = Run(25);
+		Part1 = _data.Sum(v => ProcessStoneRecursive(v, 25));
 	}
 
 	public override void CalculatePart2()
 	{
-		//Runs into max array length limit
-		Part2 = Run(75);
+		Part2 = _data.Sum(v => ProcessStoneRecursive(v, 75));
+	}
+
+	public long ProcessStoneRecursive(long stone, long target, long curDepth = 0)
+	{
+		if (curDepth == target)
+			return 1;
+		var d = target - curDepth;
+		if(_depthLookup.TryGetValue((stone, d), out var c))
+			return c;
+		long result;
+		if (stone == 0)
+			result = ProcessStoneRecursive(1, target, curDepth + 1);
+		else if (FastSplit(stone, out var left, out var right))
+			result = ProcessStoneRecursive(left, target, curDepth + 1) + ProcessStoneRecursive(right, target, curDepth + 1);
+		else
+			result = ProcessStoneRecursive(stone * 2024, target, curDepth + 1);
+
+		_depthLookup.Add((stone, d), result);
+		return result;
 	}
 
 	public long Run(long count)
@@ -42,7 +62,7 @@ public class PlutonianPebbles : Problem<long, long>
 		return a.Count;
 	}
 
-	public static void ProcessStone(long stone, List<long> data)
+	public void ProcessStone(long stone, List<long> data)
 	{
 		if (stone == 0)
 		{
@@ -66,6 +86,7 @@ public class PlutonianPebbles : Problem<long, long>
 
 	private static bool FastSplit(long stone, out long left, out long right)
 	{
+
 		var len = stone.DigitCount();
 		if (len % 2 != 0)
 		{
