@@ -16,7 +16,7 @@ namespace AdventOfCode.Problems.AOC2024.Day11;
 public class PlutonianPebbles : Problem<long, long>
 {
 	private List<long> _data = [];
-	private Dictionary<(long, long), long> _depthLookup = [];
+	private readonly Dictionary<(long, long), long> _depthLookup = [];
 
 	public override void CalculatePart1()
 	{
