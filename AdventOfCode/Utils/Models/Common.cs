@@ -4,6 +4,9 @@ namespace AdventOfCode.Utils.Models;
 
 public record struct Vec2<T>(T X, T Y) where T : INumber<T>
 {
+	public static Vec2<T> Zero => new (T.Zero, T.Zero);
+	public static Vec2<T> One => new (T.One, T.One);
+	public static Vec2<T> Splat(T v) => new(v, v);
 	public static Vec2<T> operator +(Vec2<T> left, Vec2<T> right) => new Vec2<T>(left.X + right.X, left.Y + right.Y);
 	public static Vec2<T> operator -(Vec2<T> left, Vec2<T> right) => new Vec2<T>(left.X - right.X, left.Y - right.Y);
 	public static Vec2<T> operator -(Vec2<T> vec) => new Vec2<T>(-vec.X, -vec.Y);
@@ -21,6 +24,9 @@ public record struct Vec2<T>(T X, T Y) where T : INumber<T>
 
 public record struct Vec3<T>(T X, T Y, T Z) where T : INumber<T>
 {
+	public static Vec3<T> Zero => new(T.Zero, T.Zero, T.Zero);
+	public static Vec3<T> One => new(T.One, T.One, T.One);
+	public static Vec3<T> Splat(T v) => new(v, v, v);
 	public static Vec3<T> operator +(Vec3<T> left, Vec3<T> right) => new Vec3<T>(left.X + right.X, left.Y + right.Y, left.Z + right.Z);
 	public static Vec3<T> operator -(Vec3<T> left, Vec3<T> right) => new Vec3<T>(left.X - right.X, left.Y - right.Y, left.Z - right.Z);
 	public static Vec3<T> operator -(Vec3<T> vec) => new Vec3<T>(-vec.X, -vec.Y, -vec.Z);
