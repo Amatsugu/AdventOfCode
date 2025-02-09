@@ -6,6 +6,10 @@ public record struct Vec2<T>(T X, T Y) where T : INumber<T>
 {
 	public static Vec2<T> Zero => new (T.Zero, T.Zero);
 	public static Vec2<T> One => new (T.One, T.One);
+
+	public readonly Vec2<T> YX => new(Y, X);
+	public readonly Vec2<T> YY => new(Y, Y);
+	public readonly Vec2<T> XX => new(X, X);
 	public static Vec2<T> Splat(T v) => new(v, v);
 	public static Vec2<T> operator +(Vec2<T> left, Vec2<T> right) => new Vec2<T>(left.X + right.X, left.Y + right.Y);
 	public static Vec2<T> operator -(Vec2<T> left, Vec2<T> right) => new Vec2<T>(left.X - right.X, left.Y - right.Y);

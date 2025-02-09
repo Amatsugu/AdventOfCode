@@ -1,6 +1,7 @@
 ﻿using AdventOfCode.Utils.Models;
 
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,17 +32,18 @@ internal class GardenGroups : Problem<int, int>
 	public override void CalculatePart2()
 	{
 		var plots = FindPlots(_data);
-		var r = plots.Select(plot => (plot.plant, area: plot.area.Count, sides: CountSides(GroupSides(plot.outline), plot.area)));
-		foreach (var item in plots)
+		var r = plots.Select(plot => (plot.plant, area: plot.area.Count, sides: CountSides(GroupSides(plot.outline, plot.area), plot.area)));
+		foreach (var (plant, area, perimeter, outline) in plots)
 		{
-			Console.WriteLine($"{item.plant}: {CountSides(GroupSides(item.outline), item.area)}");
-			var groups = GroupSides(item.outline);
-			DrawPlot(item.area, groups, item.plant);
+			Console.WriteLine();
+			var groups = GroupSides(outline, area);
+			Console.WriteLine($"{plant}: {CountSides(groups, area)}, {groups.Count}");
+			DrawPlot(area, groups, plant);
 		}
 		Part2 = r.Sum(v => v.area * v.sides);
 	}
 
-	public static List<List<Vec2<int>>> GroupSides(List<Vec2<int>> outline)
+	public static List<List<Vec2<int>>> GroupSides(List<Vec2<int>> outline, List<Vec2<int>> area)
 	{
 		var result = new List<List<Vec2<int>>>();
 		var visited = new HashSet<Vec2<int>>();
@@ -51,6 +53,9 @@ internal class GardenGroups : Problem<int, int>
 		{ 
 			var p = open.First();
 			open.Remove(p);
+			if(visited.Contains(p))
+				continue;
+			visited.Add(p);
 			var group = new List<Vec2<int>>() { p };
 			GetGroup(p, group);
 			result.Add(group);
@@ -58,7 +63,30 @@ internal class GardenGroups : Problem<int, int>
 
 		void GetGroup(Vec2<int> point, List<Vec2<int>> group)
 		{
-			throw new NotImplementedException();
+			var up = DIRS[0];
+			var right = DIRS[1];
+			if(outline.Contains(point + up) || outline.Contains(point - up))
+			{
+				ProcessDirection(point, up, group);
+				ProcessDirection(point, -up, group);
+			}
+			else if(outline.Contains(point + right) || outline.Contains(point - right))
+			{
+				ProcessDirection(point, right, group);
+				ProcessDirection(point, -right, group);
+			}
+		}
+
+		void ProcessDirection(Vec2<int> point, Vec2<int> dir, List<Vec2<int>> group)
+		{
+			var n = point + dir;
+			if (!outline.Contains(n) || visited.Contains(n))
+				return;
+			//if (!area.Contains(n + dir.YX) && !area.Contains(n - dir.YX))
+			//	return;
+			visited.Add(n);
+			group.Add(n);
+			ProcessDirection(n, dir, group);
 		}
 
 		return result;
@@ -69,13 +97,30 @@ internal class GardenGroups : Problem<int, int>
 	{
 		var (min, max) = GetBounds(outline.SelectMany(v => v).ToList());
 
+		int Sides(Vec2<int> point, List<Vec2<int>> group)
+		{
+			var s = 0;
+			foreach (var dir in DIRS)
+			{
+				var n = point + dir;
+				if (area.Contains(n))
+					s++;
+				if(group.Count > 1 && outline.Any(g => group != g && g.Contains(n)))
+					s--;
+			}
+			return s;
+		}
+
 		ConsoleColor[] colors = [
 			ConsoleColor.Red,
-			ConsoleColor.Green,
+			ConsoleColor.DarkGreen,
 			ConsoleColor.Blue,
-			ConsoleColor.Yellow,
+			ConsoleColor.DarkRed,
 			ConsoleColor.Magenta,
-			ConsoleColor.Cyan,
+			ConsoleColor.DarkCyan,
+			ConsoleColor.DarkBlue,
+			ConsoleColor.DarkMagenta,
+			ConsoleColor.DarkYellow
 			];
 
 		for (int y = min.Y; y <= max.Y; y++)
@@ -86,22 +131,27 @@ internal class GardenGroups : Problem<int, int>
 				var p = new Vec2<int>(x,y);
 				if (area.Contains(p))
 				{
-					Console.BackgroundColor = ConsoleColor.DarkGreen;
+					Console.BackgroundColor = ConsoleColor.Black;
 					Console.Write(plant);
 				}
 				else
 				{
-					var match = outline.FirstOrDefault(v => v.Contains(p));
-					if (match != null)
+					var curSideGroup = outline.FirstOrDefault(v => v.Contains(p));
+					if (curSideGroup != null)
 					{
-						var idx = outline.IndexOf(match);
+						var idx = outline.IndexOf(curSideGroup);
 						Console.BackgroundColor = colors[idx % colors.Length];
-						Console.Write(' ');
+						var s = Sides(p, curSideGroup);
+						if(curSideGroup.Count > 1 && IsInclosed(curSideGroup, outline, area))
+							Console.Write('&');
+						else
+							Console.Write(s);
 					}else
 						Console.Write(' ');
 				}
 				Console.ResetColor();
 			}
+			Console.ResetColor();
 			Console.WriteLine();
 		}
 		Console.ResetColor();
@@ -147,9 +197,28 @@ internal class GardenGroups : Problem<int, int>
 		return (min, max);
 	}
 
+	public static bool IsInclosed(List<Vec2<int>> side, List<List<Vec2<int>>> sides, List<Vec2<int>> area)
+	{
+		var otherSides = sides.Where(g => g != side).SelectMany(s => s).ToFrozenSet();
+		foreach (var point in side)
+		{
+			foreach (var dir in DIRS)
+			{
+				var n = point + dir;
+				if (side.Contains(n))
+					continue;
+				if (!area.Contains(n))
+					return false;
+				if (otherSides.Contains(n))
+					return false;
+			}
+		}
+		return true;
+	}
+
 	public static int CountSides(List<List<Vec2<int>>> groups, List<Vec2<int>> area)
 	{
-		int Sides(Vec2<int> point)
+		int Sides(Vec2<int> point, List<Vec2<int>> group)
 		{
 			var s = 0;
 			foreach (var dir in DIRS)
@@ -157,11 +226,12 @@ internal class GardenGroups : Problem<int, int>
 				var n = point + dir;
 				if(area.Contains(n))
 					s++;
+				if (group.Count > 1 && groups.Any(g => group != g && g.Contains(n)))
+					s--;
 			}
 			return s;
 		}
-
-		return groups.Sum(s => s.Select(Sides).Max());
+		return groups.Sum(s => s.Select(p => Sides(p, s)).Max() + (s.Count > 1 && IsInclosed(s, groups, area) ? 1 : 0));
 	}
 
 	private static List<(char plant, List<Vec2<int>> area, int perimeter, List<Vec2<int>> outline)> FindPlots(char[][] data)
