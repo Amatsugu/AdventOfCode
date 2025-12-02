@@ -13,13 +13,5 @@ public static class Extensions
 		return string.Join(delim, data);
 	}
 
-	public static T Mod<T>(this T value, T divisor) where T : INumber<T>
-	{
-		T remainder = value % divisor;
-
-		if (remainder < T.Zero)
-			return remainder + divisor;
-		else
-			return remainder;
-	}
+	
 }
