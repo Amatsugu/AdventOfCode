@@ -11,6 +11,8 @@ namespace AdventOfCode.Problems.AOC2025.Day1;
 [ProblemInfo(2025, 1, "Secret Entrance")]
 internal class SecretEntrance : Problem<int, int>
 {
+	public const int LOCK_SIZE = 100;
+
 	public int[] Input { get; set; } = [];
 	public override void CalculatePart1()
 	{
@@ -19,7 +21,7 @@ internal class SecretEntrance : Problem<int, int>
 		foreach (var item in Input)
 		{
 			v += item;
-			v = v.Mod(100);
+			v = v.Mod(LOCK_SIZE);
 			if (v == 0)
 				c++;
 		}
@@ -32,14 +34,23 @@ internal class SecretEntrance : Problem<int, int>
 		var v = 50;
 		foreach (var item in Input)
 		{
+			var vStart = v;
 			var sign = int.Sign(item);
-			for (int i = 0; i < Math.Abs(item); i++)
+			var curC = 0;
+
+			v += item;
+			if (item > 0)
+				curC += (int)Math.Floor(v / (float)LOCK_SIZE);
+			else
 			{
-				v += sign;
-				v = v.Mod(100);
-				if (v == 0)
-					c++;
+				var d = v / (float)LOCK_SIZE;
+				var fl = Math.Floor(d);
+				curC += (int)Math.Abs(fl) - (vStart == 0 ? 1 : 0);
+				if (fl == d)
+					curC += 1;
 			}
+			c += curC;
+			v = v.Mod(LOCK_SIZE);
 		}
 		Part2 = c;
 	}
