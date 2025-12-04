@@ -44,4 +44,14 @@ public static class ExtraMath
 		else
 			return remainder;
 	}
+
+	public static bool IsEven<T>(this T value) where T : INumber<T>
+	{
+		return T.IsEvenInteger(value);
+	}
+
+	public static bool IsOdd<T>(this T value) where T : INumber<T>
+	{
+		return T.IsOddInteger(value);
+	}
 }

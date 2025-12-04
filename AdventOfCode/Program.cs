@@ -4,4 +4,4 @@ global using AdventOfCode.Utils;
 
 
 var runner = new AOCRunner();
-runner.RenderInteractiveMenu();
+runner.WithDay(2).RenderInteractiveMenu();
