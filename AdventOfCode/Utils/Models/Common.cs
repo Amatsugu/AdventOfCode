@@ -24,6 +24,11 @@ public record struct Vec2<T>(T X, T Y) where T : INumber<T>
 		var b = other.Y - this.Y;
 		return (a * a) + (b * b);
 	}
+
+	public override string ToString()
+	{
+		return $"({X}, {Y})";
+	}
 }
 
 public record struct Vec3<T>(T X, T Y, T Z) where T : INumber<T>
@@ -44,5 +49,10 @@ public record struct Vec3<T>(T X, T Y, T Z) where T : INumber<T>
 		var b = other.Y - this.Y;
 		var c = other.Z - this.Z;
 		return (a * a) + (b * b) + (c * c);
+	}
+
+	public override string ToString()
+	{
+		return $"({X}, {Y}, {Z})";
 	}
 }
