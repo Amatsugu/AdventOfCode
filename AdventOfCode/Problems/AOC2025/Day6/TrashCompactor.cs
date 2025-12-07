@@ -28,12 +28,12 @@ public partial class TrashCompactor : Problem<long, long>
 
 	public override void CalculatePart2()
 	{
-		foreach (var item in _part2Data)
+		foreach (var (op, values) in _part2Data)
 		{
-			Part2 += item.op switch
+			Part2 += op switch
 			{
-				'+' => item.values.Aggregate((a, b) => a + b),
-				'*' => item.values.Aggregate((a, b) => a * b),
+				'+' => values.Aggregate((a, b) => a + b),
+				'*' => values.Aggregate((a, b) => a * b),
 				_ => throw new InvalidOperationException()
 			};
 		}
