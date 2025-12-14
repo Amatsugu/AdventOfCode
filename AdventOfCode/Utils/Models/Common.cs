@@ -36,6 +36,7 @@ public record struct Vec2<T>(T X, T Y) where T : INumber<T>
 
 	public readonly Vec2<T> Abs() => new(T.Abs(X), T.Abs(Y));
 
+
 	public override readonly string ToString()
 	{
 		return $"({X}, {Y})";
