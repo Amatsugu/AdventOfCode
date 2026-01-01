@@ -1,4 +1,10 @@
-﻿using System.Numerics;
+﻿global using Vec3i = AdventOfCode.Utils.Models.Vec3<int>;
+global using Vec2i = AdventOfCode.Utils.Models.Vec2<int>;
+global using Vec3l = AdventOfCode.Utils.Models.Vec3<long>;
+global using Vec2l = AdventOfCode.Utils.Models.Vec2<long>;
+global using Vec3f = AdventOfCode.Utils.Models.Vec3<float>;
+global using Vec2f = AdventOfCode.Utils.Models.Vec2<float>;
+using System.Numerics;
 
 namespace AdventOfCode.Utils.Models;
 
@@ -65,7 +71,7 @@ public record struct Vec3<T>(T X, T Y, T Z) where T : INumber<T>
 		var a = other.X - this.X;
 		var b = other.Y - this.Y;
 		var c = other.Z - this.Z;
-		return (a * a) + (b * b) + (c * c);
+		return T.Abs((a * a) + (b * b) + (c * c));
 	}
 
 	public readonly Vec3<T> Min(Vec3<T> other) => new(T.Min(X, other.X), T.Min(Y, other.Y), T.Min(Z, other.Z));
