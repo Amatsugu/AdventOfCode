@@ -13,12 +13,14 @@ internal class Factory : Problem<int, int>
 	{
 		var results = new int[_data.Count];
 		Parallel.ForEach(_data, (m, _, i) => results[i] = m.SolveLights());
-		Part1 += results.Sum();
+		Part1 = results.Sum();
 	}
 
 	public override void CalculatePart2()
 	{
-		throw new NotImplementedException();
+		var results = new int[_data.Count];
+		Parallel.ForEach(_data, (m, _, i) => results[i] = m.SolveJoltage());
+		Part2 = results.Sum();
 	}
 
 	public override void LoadInput()
@@ -69,8 +71,6 @@ internal class Factory : Problem<int, int>
 				foreach (var op in operations)
 				{
 					var state = new bool[curState.Length];
-					//for (int i = 0; i < curState.Length; i++)
-					//	state[i] = curState[i];
 					Buffer.BlockCopy(curState, 0, state, 0, curState.Length);
 					
 					foreach (var idx in op)
@@ -87,7 +87,53 @@ internal class Factory : Problem<int, int>
 
 		public int SolveJoltage()
 		{
-			throw new NotImplementedException();
+			var state = new int[Requirements.Length];
+			var best = int.MaxValue;
+			return Solve(Requirements, Operations, state, ref best);
+			static int Solve(int[] target, int[][] operations, int[] curState, ref int best, int depth = 0)
+			{
+				if (depth > best)
+					return int.MaxValue;
+				if (IsOver(target, curState))
+					return int.MaxValue;
+				if (IsSolved(target, curState))
+				{
+					if (depth < best)
+						best = depth;
+					return depth;
+				}
+				static bool IsOver(int[] target, int[] curState) 
+				{
+					for (int i = 0; i < target.Length; i++)
+					{
+						if (target[i] < curState[i])
+							return true;
+					}
+					return false;
+				}
+				static bool IsSolved(int[] target, int[] curState)
+				{
+					for (int i = 0; i < target.Length; i++)
+					{
+						if (target[i] != curState[i])
+							return false;
+					}
+					return true;
+				}
+				var opCount = int.MaxValue;
+				foreach (var op in operations)
+				{
+					var state = new int[curState.Length];
+					Buffer.BlockCopy(curState, 0, state, 0, curState.Length * sizeof(int));
+					foreach (var idx in op)
+						state[idx] += 1;
+
+					var c = Solve(target, operations, state, ref best, depth + 1);
+					if (c < opCount)
+						opCount = c;
+				}
+				return opCount;
+			}
 		}
 	}
 }
