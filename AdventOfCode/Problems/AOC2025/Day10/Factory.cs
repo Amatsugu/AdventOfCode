@@ -11,16 +11,12 @@ internal class Factory : Problem<int, int>
 
 	public override void CalculatePart1()
 	{
-		var results = new int[_data.Count];
-		Parallel.ForEach(_data, (m, _, i) => results[i] = m.SolveLights());
-		Part1 = results.Sum();
+		Part1 = _data.Sum(m => m.SolveLights());
 	}
 
 	public override void CalculatePart2()
 	{
-		var results = new int[_data.Count];
-		Parallel.ForEach(_data, (m, _, i) => results[i] = m.SolveJoltage());
-		Part2 = results.Sum();
+		Part2 = _data[0].SolveJoltage();
 	}
 
 	public override void LoadInput()
@@ -30,110 +26,58 @@ internal class Factory : Problem<int, int>
 
 	public class Machine
 	{
-		public bool[] Target { get; private set; }
-		public int[][] Operations { get; private set; }
-		public int[] Requirements { get; private set; }
+		public uint Target { get; private set; }
+		public uint[] Operations { get; private set; }
+		public uint[][] JoltOperations { get; private set; }
+		public uint[] JoltageTarget { get; private set; }
 
 		public Machine(string data)
 		{
 			var sections = data.Split(' ');
-			Target = sections[0][1..^1].Select(c => c == '.' ? false : true).ToArray();
-			Operations = sections[1..^1].Select(op => op[1..^1])
-				.Select(op => op.Split(',').Select(int.Parse).ToArray())
-				.ToArray();
-			Requirements = sections[^1][1..^1].Split(',').Select(int.Parse).ToArray();
+			Target = (uint)sections[0][1..^1].Select((v, idx) => (value: v == '.' ? 0u : 1u, idx)).Sum(v => v.value * (uint)Math.Pow(2, v.idx));
+			Operations = sections[1..^1].Select(v => v[1..^1]).Select(v => (uint)v.Split(',').Select(uint.Parse).Sum(v => (uint)Math.Pow(2, v))).ToArray();
+			JoltOperations = sections[1..^1].Select(v => v[1..^1]).Select(v => v.Split(',').Select(uint.Parse).ToArray()).ToArray();
+			JoltageTarget = sections[^1][1..^1].Split(',').Select(uint.Parse).ToArray();
 		}
 
 		public int SolveLights()
-		{ 
-			var state = Enumerable.Repeat(false, Target.Length).ToArray();
-			var best = Target.Length;
-			return Solve(Target, Operations, state, ref best);
+		{
+			var open = new List<(uint value, int depth)>() { (0, 0) };
+			var best = -1;
 
-			static int Solve(bool[] goal, int[][] operations, bool[] curState, ref int best, int depth = 0)
+			while (open.Count != 0)
 			{
-				static bool IsSolved(bool[] goal, bool[] state)
+				var (value, depth) = open[0];
+				open.RemoveAt(0);
+				foreach (var op in Operations)
 				{
-					for (int i = 0; i < goal.Length; i++)
+					var v = value ^ op;
+					if (v == Target)
+						return depth + 1;
+					if (CanSolveLight(v))
 					{
-						if (goal[i] != state[i])
-							return false;
+						best = depth + 2;
+						continue;
 					}
-					return true;
+					open.Add((v, depth + 1));
 				}
-
-				if (IsSolved(goal, curState))
-					return depth;
-				if (depth >= best)
-					return depth;
-
-				var opCount = int.MaxValue;
-				foreach (var op in operations)
-				{
-					var state = new bool[curState.Length];
-					Buffer.BlockCopy(curState, 0, state, 0, curState.Length);
-					
-					foreach (var idx in op)
-						state[idx] = !curState[idx];
-					var c = Solve(goal, operations, state, ref best, depth + 1);
-					if (c < best)
-						best = c;
-					if (c < opCount)
-						opCount = c;
-				}
-				return opCount;
+				if (best != -1)
+					return best;
 			}
+			return -1;
+		}
+
+		private bool CanSolveLight(uint value)
+		{
+			var targetOp = value ^ Target;
+			return Operations.Contains(targetOp);
 		}
 
 		public int SolveJoltage()
 		{
-			var state = new int[Requirements.Length];
-			var best = int.MaxValue;
-			return Solve(Requirements, Operations, state, ref best);
-			static int Solve(int[] target, int[][] operations, int[] curState, ref int best, int depth = 0)
-			{
-				if (depth > best)
-					return int.MaxValue;
-				if (IsOver(target, curState))
-					return int.MaxValue;
-				if (IsSolved(target, curState))
-				{
-					if (depth < best)
-						best = depth;
-					return depth;
-				}
-				static bool IsOver(int[] target, int[] curState) 
-				{
-					for (int i = 0; i < target.Length; i++)
-					{
-						if (target[i] < curState[i])
-							return true;
-					}
-					return false;
-				}
-				static bool IsSolved(int[] target, int[] curState)
-				{
-					for (int i = 0; i < target.Length; i++)
-					{
-						if (target[i] != curState[i])
-							return false;
-					}
-					return true;
-				}
-				var opCount = int.MaxValue;
-				foreach (var op in operations)
-				{
-					var state = new int[curState.Length];
-					Buffer.BlockCopy(curState, 0, state, 0, curState.Length * sizeof(int));
-					foreach (var idx in op)
-						state[idx] += 1;
-
-					var c = Solve(target, operations, state, ref best, depth + 1);
-					if (c < opCount)
-						opCount = c;
-				}
-				return opCount;
-			}
+			var graph = new JoltageGraph(JoltageTarget, JoltOperations);
+			return graph.Solve();
 		}
+
 	}
 }
