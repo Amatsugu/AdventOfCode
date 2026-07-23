@@ -16,12 +16,12 @@ internal class Factory : Problem<int, int>
 
 	public override void CalculatePart2()
 	{
-		Part2 = _data[0].SolveJoltage();
+		Part2 = _data.Sum(m => m.SolveJoltage());
 	}
 
 	public override void LoadInput()
 	{
-		_data = ReadInputLines("input.txt").Select(l => new Machine(l)).ToList();
+		_data = ReadInputLines("sample.txt").Select(l => new Machine(l)).ToList();
 	}
 
 	public class Machine
@@ -78,6 +78,5 @@ internal class Factory : Problem<int, int>
 			var graph = new JoltageGraph(JoltageTarget, JoltOperations);
 			return graph.Solve();
 		}
-
 	}
 }

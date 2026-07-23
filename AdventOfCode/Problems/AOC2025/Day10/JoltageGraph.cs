@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Text;
 
@@ -19,7 +20,7 @@ public class JoltageGraph
 	{
 		_target = target;
 		_ops = [.. ops.Select((ops, id) => (id, ops))];
-		_root = new(target.Length, 0);
+		_root = new(_target, 0);
 		_nodes = [_root];
 		_nodeIds = new() { { _root.Value, 0 } };
 	}
@@ -30,6 +31,7 @@ public class JoltageGraph
 	/// <returns></returns>
 	public int Solve()
 	{
+		var dst = new uint[_target.Length];
 		var open = new Queue<Node>(10000);
 		open.Enqueue(_root);
 		while (open.Count != 0)
@@ -41,9 +43,11 @@ public class JoltageGraph
 			{
 				if (curNode.HasOp(opId))
 					continue;
-				var v = curNode.ApplyJoltageOperation(op);
-				if (IsOverJoltage(v))
+				if (!curNode.TryApplyJoltageOperation(op, out var v))
 					continue;
+				//var v = curNode.ApplyJoltageOperation(op);
+				//if (IsOverJoltage(v))
+				//	continue;
 				var existing = GetExistingNdoe(v);
 				if (existing != null)
 				{
@@ -58,7 +62,7 @@ public class JoltageGraph
 					curNode.AddConnection(opId, newNode.Id);
 					newNode.AddBackConnection(curNode.Id);
 					open.Enqueue(newNode);
-					if(newNode == _target)
+					if(newNode == dst)
 					{
 						open.Clear();
 						break;
@@ -89,7 +93,8 @@ public class JoltageGraph
 	public int TraverseToTarget()
 	{
 		var visited = new Dictionary<int, int>();
-		return ReverseTraverse(_nodes.First(n => n == _target), visited, 0);
+		var tgt = new uint[_target.Length];
+		return ReverseTraverse(_nodes.First(n => n == tgt), visited, 0);
 	}
 
 	private int Traverse(Node node, Dictionary<int, int> visited, int depth = 0)
@@ -182,27 +187,25 @@ public class JoltageGraph
 			BackConnections.Add(nodeId);
 		}
 
-		public uint[] ApplyJoltageOperation(uint[] ops)
+		public bool TryApplyJoltageOperation(uint[] ops, [NotNullWhen(true)] out uint[]? output)
 		{
 			var result = new uint[Value.Length];
 			for (uint i = 0; i < Value.Length; i++)
 			{
 				if (ops.Contains(i))
-					result[i] = Value[i] + 1;
+				{
+					if(Value[i] == 0)
+					{
+						output = null;
+						return false;
+					}
+					result[i] = Value[i] - 1;
+				}
 				else
 					result[i] = Value[i];
 			}
-			return result;
-		}
-
-		public bool IsOverJoltage(uint[] target)
-		{
-			for (int i = 0; i < Value.Length; i++)
-			{
-				if (Value[i] > target[i])
-					return true;
-			}
-			return false;
+			output = result;
+			return true;
 		}
 
 		public bool Equals(uint[]? other)
