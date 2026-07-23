@@ -16,12 +16,13 @@ internal class Factory : Problem<int, int>
 
 	public override void CalculatePart2()
 	{
-		Part2 = _data.Sum(m => m.SolveJoltage());
+		throw new NotImplementedException();
+		//Part2 = _data.Sum(m => m.SolveJoltage());
 	}
 
 	public override void LoadInput()
 	{
-		_data = ReadInputLines("sample.txt").Select(l => new Machine(l)).ToList();
+		_data = ReadInputLines("input.txt").Select(l => new Machine(l)).ToList();
 	}
 
 	public class Machine
@@ -34,8 +35,9 @@ internal class Factory : Problem<int, int>
 		public Machine(string data)
 		{
 			var sections = data.Split(' ');
-			Target = (uint)sections[0][1..^1].Select((v, idx) => (value: v == '.' ? 0u : 1u, idx)).Sum(v => v.value * (uint)Math.Pow(2, v.idx));
-			Operations = sections[1..^1].Select(v => v[1..^1]).Select(v => (uint)v.Split(',').Select(uint.Parse).Sum(v => (uint)Math.Pow(2, v))).ToArray();
+			Target = (uint)sections[0][1..^1].Select((v, idx) => (value: v == '.' ? 0u : 1u, idx))
+				.Sum(v => v.value * (uint)(1 << v.idx));
+			Operations = sections[1..^1].Select(v => v[1..^1]).Select(v => (uint)v.Split(',').Select(int.Parse).Sum(v => (uint)(1 << v))).ToArray();
 			JoltOperations = sections[1..^1].Select(v => v[1..^1]).Select(v => v.Split(',').Select(uint.Parse).ToArray()).ToArray();
 			JoltageTarget = sections[^1][1..^1].Split(',').Select(uint.Parse).ToArray();
 		}
@@ -77,6 +79,11 @@ internal class Factory : Problem<int, int>
 		{
 			var graph = new JoltageGraph(JoltageTarget, JoltOperations);
 			return graph.Solve();
+		}
+
+		public override string ToString()
+		{
+			return Convert.ToString(Target, 2);
 		}
 	}
 }

@@ -37,17 +37,12 @@ public class JoltageGraph
 		while (open.Count != 0)
 		{
 			var curNode = open.Dequeue();
-			//if (curNode.IsOverJoltage(_target))
-			//	continue;
 			foreach (var (opId, op) in _ops)
 			{
 				if (curNode.HasOp(opId))
 					continue;
 				if (!curNode.TryApplyJoltageOperation(op, out var v))
 					continue;
-				//var v = curNode.ApplyJoltageOperation(op);
-				//if (IsOverJoltage(v))
-				//	continue;
 				var existing = GetExistingNdoe(v);
 				if (existing != null)
 				{
@@ -78,16 +73,6 @@ public class JoltageGraph
 		if (_nodeIds.TryGetValue(value, out var id))
 			return _nodes[id];
 		return null;
-	}
-
-	private bool IsOverJoltage(uint[] value)
-	{
-		for (int i = 0; i < value.Length; i++)
-		{
-			if (value[i] > _target[i])
-				return true;
-		}
-		return false;
 	}
 
 	public int TraverseToTarget()
