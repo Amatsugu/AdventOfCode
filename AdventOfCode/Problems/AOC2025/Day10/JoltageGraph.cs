@@ -13,6 +13,7 @@ public class JoltageGraph
 	private readonly (int id, uint[] ops)[] _ops;
 	private readonly Node _root;
 	private readonly List<Node> _nodes;
+	private readonly Dictionary<uint[], int> _nodeIds;
 
 	public JoltageGraph(uint[] target, uint[][] ops)
 	{
@@ -20,15 +21,20 @@ public class JoltageGraph
 		_ops = [.. ops.Select((ops, id) => (id, ops))];
 		_root = new(target.Length, 0);
 		_nodes = [_root];
+		_nodeIds = new() { { _root.Value, 0 } };
 	}
 
+	/// <summary>
+	/// This is not the way
+	/// </summary>
+	/// <returns></returns>
 	public int Solve()
 	{
-		var open = new List<Node>() { _root };
+		var open = new Queue<Node>(10000);
+		open.Enqueue(_root);
 		while (open.Count != 0)
 		{
-			var curNode = open[0];
-			open.RemoveAt(0);
+			var curNode = open.Dequeue();
 			//if (curNode.IsOverJoltage(_target))
 			//	continue;
 			foreach (var (opId, op) in _ops)
@@ -38,7 +44,7 @@ public class JoltageGraph
 				var v = curNode.ApplyJoltageOperation(op);
 				if (IsOverJoltage(v))
 					continue;
-				var existing = _nodes.FirstOrDefault(n => n == v);
+				var existing = GetExistingNdoe(v);
 				if (existing != null)
 				{
 					curNode.AddConnection(opId, existing.Id);
@@ -48,9 +54,10 @@ public class JoltageGraph
 				{
 					var newNode = new Node(v, _nodes.Count);
 					_nodes.Add(newNode);
+					_nodeIds.Add(newNode.Value, newNode.Id);
 					curNode.AddConnection(opId, newNode.Id);
 					newNode.AddBackConnection(curNode.Id);
-					open.Add(newNode);
+					open.Enqueue(newNode);
 					if(newNode == _target)
 					{
 						open.Clear();
@@ -60,6 +67,13 @@ public class JoltageGraph
 			}
 		}
 		return TraverseToTarget();
+	}
+
+	private Node? GetExistingNdoe(uint[] value)
+	{
+		if (_nodeIds.TryGetValue(value, out var id))
+			return _nodes[id];
+		return null;
 	}
 
 	private bool IsOverJoltage(uint[] value)
