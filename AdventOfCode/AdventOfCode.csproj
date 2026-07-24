@@ -76,8 +76,10 @@
 
 
   <ItemGroup>
+	<PackageReference Include="Google.OrTools" Version="9.15.6755" />
+	<PackageReference Include="MathNet.Numerics" Version="5.0.0" />
 	<PackageReference Include="MaybeError" Version="1.2.0" />
-	<PackageReference Include="Superpower" Version="3.1.1-dev-00257" />
-	<PackageReference Include="ZLinq" Version="1.5.4" />
+	<PackageReference Include="Superpower" Version="3.2.2-dev-00214" />
+	<PackageReference Include="ZLinq" Version="1.5.6" />
   </ItemGroup>
 </Project>
