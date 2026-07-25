@@ -16,9 +16,53 @@ internal class GiftShop : Problem<long, long>
 	public override void CalculatePart1()
 	{
 		var v = _ranges.SelectMany(GetDoubleSequences);
-		//Console.WriteLine(v.AsJoinedString());
 		Part1 = v.Sum();
 	}
+
+	public override void CalculatePart2()
+	{
+		Part2 = _ranges.Sum(GetRepeatedSequencesSum);
+	}
+
+
+	public long GetRepeatedSequencesSum(IdRange range)
+	{
+		HashSet<long> values = [
+			.. GetCandidateSequences(range, range.Min),
+			.. GetCandidateSequences(range, range.Max)
+			];
+		Console.WriteLine($"{range}: {values.AsJoinedString()}");
+		return values.Sum();
+	}
+
+	private static List<long> GetCandidateSequences(IdRange range, long baseNumber)
+	{
+		var results = new List<long>();
+		var digits = (int)baseNumber.DigitCount();
+		var baseVal = baseNumber.ToString()[0..(digits/2)];
+		while(baseVal.Length != 0)
+		{
+			var seqNum = long.Parse(baseVal);
+			while (seqNum.DigitCount() == baseVal.Length)
+			{
+				var groups = $"{seqNum}";
+				while (true)
+				{
+					groups = $"{groups}{seqNum}";
+					var seq = long.Parse(groups);
+					if (seq < range.Min)
+						continue;
+					if (seq > range.Max)
+						break;
+					results.Add(seq);
+				}
+				seqNum++;
+			}
+			baseVal = baseVal[0..^1];
+		}
+		return results;
+	}
+
 
 	public static long[] GetDoubleSequences(IdRange range)
 	{
@@ -75,10 +119,7 @@ internal class GiftShop : Problem<long, long>
 		return val;
 	}
 
-	public override void CalculatePart2()
-	{
-		throw new NotImplementedException();
-	}
+
 
 	public override void LoadInput()
 	{
