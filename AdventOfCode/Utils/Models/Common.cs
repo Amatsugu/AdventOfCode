@@ -31,7 +31,13 @@ public record struct Vec2<T>(T X, T Y) where T : INumber<T>
 
 	public readonly T DistanceSq(Vec2<T> other) => (this - other).MagnitudeSq();
 
-	public readonly T MagnitudeSq() => (X * X) + (Y * Y);
+	public readonly T MagnitudeSq()
+	{
+		checked
+		{
+			return (X * X) + (Y * Y);
+		}
+	}
 
 	public readonly Vec2<T> Min(Vec2<T> other) => new(T.Min(X, other.X), T.Min(Y, other.Y));
 
@@ -65,7 +71,13 @@ public record struct Vec3<T>(T X, T Y, T Z) where T : INumber<T>
 
 	public readonly T DistanceSq(Vec3<T> other) => (this - other).MagnitudeSq();
 
-	public readonly T MagnitudeSq() => (X * X) + (Y * Y) + (Z * Z);
+	public readonly T MagnitudeSq()
+	{
+		checked
+		{
+			return (X * X) + (Y * Y) + (Z * Z);
+		}
+	}
 
 	public readonly Vec3<T> Min(Vec3<T> other) => new(T.Min(X, other.X), T.Min(Y, other.Y), T.Min(Z, other.Z));
 
