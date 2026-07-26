@@ -1,5 +1,9 @@
 ﻿using AdventOfCode.Utils.Models;
 
+using Google.OrTools.PDLP;
+
+using MathNet.Numerics;
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,42 +13,51 @@ namespace AdventOfCode.Problems.AOC2025.Day8;
 [ProblemInfo(2025, 8, "Playground")]
 internal class Playground : Problem<long, long>
 {
-	private Vec3i[] _boxPositions= [];
+	private Vec3l[] _boxPositions = [];
 
 	public override void CalculatePart1()
 	{
-		var networks = new List<Network>();
-		var closest = GetClosestPairs(_boxPositions, 1000);
-		foreach (var (a, b)in closest)
+		Part1 = BuildNetwork(1000);
+	}
+
+	public long BuildNetwork(int size) => BuildNetwork(size, out _);
+	public long BuildNetwork(int size, out (Vec3l a, Vec3l b) last)
+	{
+		var networks = _boxPositions.Select(b => new Network(b)).ToList();
+		var closest = GetClosestPairs(_boxPositions, size);
+		last = closest[0];
+		foreach (var (a, b) in closest)
 		{
 			var existingNetworkA = networks.FirstOrDefault(n => n.Members.Contains(a));
 			var existingNetworkB = networks.FirstOrDefault(n => n.Members.Contains(b));
+			if (existingNetworkA == existingNetworkB)
+				continue;
 			if ((existingNetworkA != null && existingNetworkB == null))
-				existingNetworkA.AddConnection(a, b);
-			else if (existingNetworkB != null && existingNetworkA == null)
-				existingNetworkB.AddConnection(a, b);
-			else if (existingNetworkA != null && existingNetworkB != null && existingNetworkA != existingNetworkB)
 			{
-				existingNetworkA.AddConnection(a, b);
+				existingNetworkA.AddConnection(b);
+				last = (a, b);
+			}
+			else if (existingNetworkB != null && existingNetworkA == null)
+			{
+				existingNetworkB.AddConnection(a);
+				last = (a, b);
+			}
+			else if (existingNetworkA != null && existingNetworkB != null)
+			{
 				existingNetworkA.MergeWith(existingNetworkB);
 				networks.Remove(existingNetworkB);
-			}
-			else if(existingNetworkA == null && existingNetworkB == null)
-			{
-				var newNetwork = new Network().AddConnection(a, b);
-				networks.Add(newNetwork);
+				last = (a, b);
 			}
 		}
-		Console.WriteLine($"Networks: {networks.Count}");
-		Part1 = networks.Select(n => n.Members.Count)
+		return networks.Select(n => n.Members.Count)
 			.OrderDescending()
 			.Take(3)
 			.Aggregate((a, b) => a * b);
 	}
 
-	private static List<(Vec3i a , Vec3i b)> GetClosestPairs(Vec3i[] boxes, int count = 10)
+	private static List<(Vec3l a, Vec3l b)> GetClosestPairs(Vec3l[] boxes, int count = 10)
 	{
-		var distances = new Dictionary<(Vec3i a, Vec3i b), double>();
+		var distances = new Dictionary<(Vec3l a, Vec3l b), long>();
 
 		for (int i = 0; i < boxes.Length; i++)
 		{
@@ -52,9 +65,8 @@ internal class Playground : Problem<long, long>
 			for (int j = (i + 1); j < boxes.Length; j++)
 			{
 				var b = boxes[j];
-				if (distances.ContainsKey((a, b)) || distances.ContainsKey((b, a)))
-					continue;
-				distances.Add((a, b), Math.Sqrt(a.DistanceSq(b)));
+				var d = a.DistanceSq(b);
+				distances.Add((a, b), d);
 			}
 		}
 		return distances.OrderBy(v => v.Value).Take(count).Select(v => v.Key).ToList();
@@ -62,66 +74,40 @@ internal class Playground : Problem<long, long>
 
 	public override void CalculatePart2()
 	{
-		throw new NotImplementedException();
+		BuildNetwork(int.MaxValue, out var lastPair);
+
+		Part2 = lastPair.a.X * lastPair.b.X;
 	}
 
 	public override void LoadInput()
 	{
-		_boxPositions = ReadInputLines("sample.txt")
-			.Select(l => l.Split(',').Select(int.Parse))
-			.Select(c => new Vec3i(c.First(), c.Skip(1).First(), c.Last()))
+		_boxPositions = ReadInputLines("input.txt")
+			.Select(l => l.Split(',').Select(long.Parse))
+			.Select(c => new Vec3l(c.First(), c.Skip(1).First(), c.Last()))
 			.ToArray();
 	}
 
-	private record class JunctionBox(Vec3i Pos, HashSet<Vec3i> Connections);
 
 	private class Network
 	{
-		public HashSet<Vec3i> Members { get; private set; } = [];
-		public List<JunctionBox> Boxes { get; private set; } = [];
+		public HashSet<Vec3l> Members { get; private set; } = [];
 
-		public bool IsConnectedTo(Vec3i pos)
+		public Network(Vec3l box)
 		{
-			return Members.Contains(pos);
+			Members.Add(box);
 		}
 
-		public bool IntersectsWith(Network other)
+		public Network AddConnection(Vec3l other)
 		{
-			return Members.Intersect(other.Members).Any();
-		}
-
-		public Network AddConnection(Vec3i a, Vec3i b)
-		{
-			if (Members.Contains(a) && Members.Contains(b))
-				return this;
-			Members.Add(a);
-			Members.Add(b);
-			var boxA = GetOrAddBox(a);
-			var boxB = GetOrAddBox(b);
-			boxA.Connections.Add(b);
-			boxB.Connections.Add(a);
+			Members.Add(other);
 			return this;
-		}
-
-		private JunctionBox GetOrAddBox(Vec3i pos)
-		{
-			var box = Boxes.FirstOrDefault(box => box.Pos == pos);
-			if(box == null)
-			{
-				box = new JunctionBox(pos, []);
-				Boxes.Add(box);
-			}
-			return box;
 		}
 
 		public Network MergeWith(Network other)
 		{
-			foreach (var box in other.Boxes)
+			foreach (var box in other.Members)
 			{
-				foreach (var connection in box.Connections)
-				{
-					AddConnection(box.Pos, connection);
-				}
+				AddConnection(box);
 			}
 			return this;
 		}

@@ -3,5 +3,5 @@ global using AdventOfCode.Runner.Attributes;
 global using AdventOfCode.Utils;
 
 
-var runner = new AOCRunner().WithYear(2025).WithDay(2);
+var runner = new AOCRunner().WithYear(2025).WithDay(8);
 runner.RenderInteractiveMenu();

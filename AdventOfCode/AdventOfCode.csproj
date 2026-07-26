@@ -20,54 +20,9 @@
 		</EmbeddedResource>
 	</ItemGroup>
 
-
-  <ItemGroup>
-	<None Remove="Problems\AOC2022\Day10\input.txt" />
-	<None Remove="Problems\AOC2022\Day10\sara.txt" />
-	<None Remove="Problems\AOC2022\Day10\simple.txt" />
-	<None Remove="Problems\AOC2022\Day10\test.txt" />
-	<None Remove="Problems\AOC2022\Day11\input.txt" />
-	<None Remove="Problems\AOC2022\Day11\test.txt" />
-	<None Remove="Problems\AOC2022\Day3\input.txt" />
-	<None Remove="Problems\AOC2022\Day3\test.txt" />
-	<None Remove="Problems\AOC2022\Day4\input.txt" />
-	<None Remove="Problems\AOC2022\Day4\test.txt" />
-	<None Remove="Problems\AOC2022\Day5\input.txt" />
-	<None Remove="Problems\AOC2022\Day5\test.txt" />
-	<None Remove="Problems\AOC2022\Day6\input.txt" />
-	<None Remove="Problems\AOC2022\Day6\test.txt" />
-	<None Remove="Problems\AOC2022\Day8\input.txt" />
-	<None Remove="Problems\AOC2022\Day8\test.txt" />
-	<None Remove="Problems\AOC2022\Day9\input.txt" />
-	<None Remove="Problems\AOC2022\Day9\test.txt" />
-	<None Remove="Problems\AOC2022\Day9\test2.txt" />
-	<None Remove="problems\aoc2023\day10\input.txt" />
-	<None Remove="problems\aoc2023\day10\sample.txt" />
-	<None Remove="problems\aoc2023\day11\input.txt" />
-	<None Remove="problems\aoc2023\day11\sample.txt" />
-	<None Remove="problems\aoc2023\day12\input.txt" />
-	<None Remove="problems\aoc2023\day12\sample.txt" />
-	<None Remove="problems\aoc2023\day1\input.txt" />
-	<None Remove="problems\aoc2023\day2\input.txt" />
-	<None Remove="problems\aoc2023\day3\input.txt" />
-	<None Remove="problems\aoc2023\day3\sample.txt" />
-	<None Remove="problems\aoc2023\day3\sara.txt" />
-	<None Remove="problems\aoc2023\day4\input.txt" />
-	<None Remove="problems\aoc2023\day4\sample.txt" />
-	<None Remove="problems\aoc2023\day5\input.txt" />
-	<None Remove="problems\aoc2023\day5\sample.txt" />
-	<None Remove="problems\aoc2023\day6\input.txt" />
-	<None Remove="problems\aoc2023\day6\sample.txt" />
-	<None Remove="problems\aoc2023\day7\input.txt" />
-	<None Remove="problems\aoc2023\day7\sample.txt" />
-	<None Remove="problems\aoc2023\day7\sara.txt" />
-	<None Remove="problems\aoc2023\day8\input.txt" />
-	<None Remove="problems\aoc2023\day8\sample.txt" />
-	<None Remove="problems\aoc2023\day9\input.txt" />
-	<None Remove="problems\aoc2023\day9\sample.txt" />
-	<None Remove="problems\aoc2023\day9\sara.txt" />
-  </ItemGroup>
-
+	<ItemGroup>
+	  <None Remove="Problems\AOC2025\Day8\shino.txt" />
+	</ItemGroup>
 
   <ItemGroup>
 	<Folder Include="Problems\AOC2015\" />
