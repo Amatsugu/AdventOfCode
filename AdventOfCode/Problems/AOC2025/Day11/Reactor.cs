@@ -34,7 +34,7 @@ internal class Reactor : Problem<long, long>
 		Part2 = FindDacFftPath("svr");
 	}
 
-	private int FindDacFftPath(string src) => FindDacFftPath(src, []).Item1;
+	private int FindDacFftPath(string src) => FindDacFftPath(src, []).sum;
 	private (int sum, int outs) FindDacFftPath(string src, Dictionary<string, int> cache, bool dac = false, bool fft = false)
 	{
 		if (src == "out")
@@ -45,7 +45,7 @@ internal class Reactor : Problem<long, long>
 		var sum = (0, 0);
 		foreach (var dst in _routes[src])
 		{
-			var res = FindDacFftPath(dst, cache, dac || src == "dac", fft || src == "fft");
+			var res = FindDacFftPath(dst, cache, dac || dst == "dac", fft || dst == "fft");
 			sum.Item1 += res.sum;
 			sum.Item2 += res.outs;
 		}
