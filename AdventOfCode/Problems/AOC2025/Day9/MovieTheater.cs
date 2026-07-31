@@ -1,5 +1,4 @@
-﻿using AdventOfCode.Utils.Models;
-
+﻿
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
@@ -49,15 +48,14 @@ internal class MovieTheater : Problem<long, long>
 			for (long j = (i + 1); j < _input.Length; j++)
 			{
 				var b = _input[j];
-				var (c,d) = GetOtherCorners(a, b);
-				Vec2l[] checkPoints = [a,b,c, d];
+				var (c, d) = GetOtherCorners(a, b);
+				Vec2l[] checkPoints = [a, b, c, d];
 				if (checkPoints.All(p => CastRays(p, bounds)))
 				{
 					best = (a, b);
 					var area = CalculateArea(a, b);
 					if (Part2 < area)
 						Part2 = area;
-					Debug(best.a, best.b, bounds, checkPoints);
 				}
 			}
 		}
@@ -80,7 +78,7 @@ internal class MovieTheater : Problem<long, long>
 			if (line.IsHorizontal)
 			{
 				var xInt = line.InterceptX(point.X);
-				if(xInt is Vec2l x)
+				if (xInt is Vec2l x)
 				{
 					if (x.Y == point.Y)
 						return true;
@@ -140,7 +138,7 @@ internal class MovieTheater : Problem<long, long>
 				}
 				foreach (var point in points)
 				{
-					canvas.DrawEllipse(pointColor, new PointF(((point.X - min.X)/ scale) + (pad.X / 2), ((point.Y - min.Y)/scale) + (pad.X / 2)), new SizeF(1, 1));
+					canvas.DrawEllipse(pointColor, new PointF(((point.X - min.X) / scale) + (pad.X / 2), ((point.Y - min.Y) / scale) + (pad.X / 2)), new SizeF(1, 1));
 				}
 			});
 		});

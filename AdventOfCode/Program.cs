@@ -1,7 +1,8 @@
 global using AdventOfCode.Runner;
 global using AdventOfCode.Runner.Attributes;
 global using AdventOfCode.Utils;
+global using AdventOfCode.Utils.Models;
 
 
-var runner = new AOCRunner().WithYear(2025).WithDay(9);
+var runner = new AOCRunner();
 runner.RenderInteractiveMenu();
