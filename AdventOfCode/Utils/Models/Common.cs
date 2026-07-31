@@ -40,11 +40,11 @@ public record struct Vec2<T>(T X, T Y) where T : INumber<T>
 	}
 
 	public readonly Vec2<T> Min(Vec2<T> other) => new(T.Min(X, other.X), T.Min(Y, other.Y));
-
 	public readonly Vec2<T> Max(Vec2<T> other) => new(T.Max(X, other.X), T.Max(Y, other.Y));
 	public readonly T Max() => T.Max(X, Y);
 	public readonly T Min() => T.Min(X, Y);
-
+	public readonly Vec2<T> Rotate90CCW() => new(-Y, X);
+	public readonly Vec2<T> Rotate90CW() => new(Y, -X);
 	public readonly Vec2<T> Abs() => new(T.Abs(X), T.Abs(Y));
 
 

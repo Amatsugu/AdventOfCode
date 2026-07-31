@@ -1,3 +1,5 @@
+using MathNet.Numerics.LinearAlgebra.Solvers;
+
 namespace AdventOfCode.Problems.AOC2025.Day11;
 
 [ProblemInfo(2025, 11, nameof(Reactor))]
@@ -10,7 +12,7 @@ internal class Reactor : Problem<long, long>
 		Part1 = FindPath("you");
 	}
 
-	private int FindPath(string src, bool dac = true, bool fft = true) => FindPath(src, []);
+	private int FindPath(string src) => FindPath(src, []);
 	private int FindPath(string src, Dictionary<string, int> cache)
 	{
 		if (src == "out")
@@ -34,23 +36,19 @@ internal class Reactor : Problem<long, long>
 		Part2 = FindDacFftPath("svr");
 	}
 
-	private int FindDacFftPath(string src) => FindDacFftPath(src, []).sum;
-	private (int sum, int outs) FindDacFftPath(string src, Dictionary<string, int> cache, bool dac = false, bool fft = false)
+	private long FindDacFftPath(string src) => FindDacFftPath(src, []);
+	private long FindDacFftPath(string src, Dictionary<(string, bool, bool), long> cache, bool dac = false, bool fft = false)
 	{
 		if (src == "out")
-			return (dac && fft ? 1 : 0, 1);
-		if (dac && fft && cache.TryGetValue(src, out var c))
-			return (c, c);
+			return (dac && fft) ? 1 : 0;
 
-		var sum = (0, 0);
-		foreach (var dst in _routes[src])
-		{
-			var res = FindDacFftPath(dst, cache, dac || dst == "dac", fft || dst == "fft");
-			sum.Item1 += res.sum;
-			sum.Item2 += res.outs;
-		}
+		if (cache.TryGetValue((src, dac, fft), out var c))
+			return c;
 
-		cache.TryAdd(src, sum.Item2);
+		var sum = _routes[src].Sum(dst => FindDacFftPath(dst, cache, dac || dst == "dac", fft || dst == "fft"));
+		
+
+		cache.TryAdd((src, dac, fft), sum);
 
 		return sum;
 	}
