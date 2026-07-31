@@ -42,6 +42,8 @@ public record struct Vec2<T>(T X, T Y) where T : INumber<T>
 	public readonly Vec2<T> Min(Vec2<T> other) => new(T.Min(X, other.X), T.Min(Y, other.Y));
 
 	public readonly Vec2<T> Max(Vec2<T> other) => new(T.Max(X, other.X), T.Max(Y, other.Y));
+	public readonly T Max() => T.Max(X, Y);
+	public readonly T Min() => T.Min(X, Y);
 
 	public readonly Vec2<T> Abs() => new(T.Abs(X), T.Abs(Y));
 
@@ -82,6 +84,8 @@ public record struct Vec3<T>(T X, T Y, T Z) where T : INumber<T>
 	public readonly Vec3<T> Min(Vec3<T> other) => new(T.Min(X, other.X), T.Min(Y, other.Y), T.Min(Z, other.Z));
 
 	public readonly Vec3<T> Max(Vec3<T> other) => new(T.Max(X, other.X), T.Max(Y, other.Y), T.Max(Z, other.Z));
+	public readonly T Max() => T.Max(T.Max(X, Y), Z);
+	public readonly T Min() => T.Min(T.Min(X, Y), Z);
 	public readonly Vec3<T> Abs() => new(T.Abs(X), T.Abs(Y), T.Abs(Z));
 
 	public override readonly string ToString()
