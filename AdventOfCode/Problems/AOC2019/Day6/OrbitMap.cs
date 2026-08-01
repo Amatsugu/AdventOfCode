@@ -1,4 +1,6 @@
-﻿namespace AdventOfCode.Problems.AOC2019.Day6
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace AdventOfCode.Problems.AOC2019.Day6
 {
 	public class OrbitMap
 	{
@@ -7,10 +9,11 @@
 
 		public OrbitMap(string[] orbits)
 		{
-			objectMap = new Dictionary<string, CelestialObject>();
+			objectMap = [];
 			GenerateOrbits(orbits);
 		}
 
+		[MemberNotNull(nameof(root))]
 		public void GenerateOrbits(string[] orbits)
 		{
 			for (int i = 0; i < orbits.Length; i++)
@@ -24,6 +27,8 @@
 
 				parent.AddChild(child);
 			}
+			if (root == null)
+				throw new InvalidOperationException("No body found with name 'COM'");
 		}
 
 		public CelestialObject GetOrCreateObject(string name)
@@ -55,18 +60,12 @@
 
 		public int GetDepthOf(string name) => root.GetDepth(name);
 
-		public class CelestialObject
+		public class CelestialObject(string name)
 		{
-			public string Name { get; set; }
+			public string Name { get; set; } = name;
 			public int ChildCount => children.Count;
 
-			public List<CelestialObject> children;
-
-			public CelestialObject(string name)
-			{
-				children = new List<CelestialObject>();
-				Name = name;
-			}
+			public List<CelestialObject> children = [];
 
 			public void AddChild(CelestialObject child)
 			{
