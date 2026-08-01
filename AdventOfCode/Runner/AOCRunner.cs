@@ -293,7 +293,7 @@ public class AOCRunner
 			if (end >= tabMaxPos)
 				break;
 			if (year == _selectedYear)
-				DrawSelectedButton(year.ToString(), 2, col, buttonWidth, 1, ConsoleColor.Red, ConsoleColor.Blue);
+				DrawSelectedButton(year.ToString(), 2, col, buttonWidth, 1, ConsoleColor.Black, ConsoleColor.DarkBlue);
 			else
 				DrawButton(year.ToString(), 2, col, buttonWidth, 1, ConsoleColor.Gray, Console.BackgroundColor);
 		}
@@ -306,7 +306,7 @@ public class AOCRunner
 			DrawBorder(5, 0, Console.WindowWidth, Console.WindowHeight - 5);
 			Console.SetCursorPosition(Console.WindowWidth / 2 - 5, 5);
 			Console.ForegroundColor = ConsoleColor.Blue;
-			Console.Write(" Problems ");
+			Console.Write($" Problems - {_selectedYear} ");
 			RenderProblemList();
 		}
 		else
@@ -327,7 +327,7 @@ public class AOCRunner
 		for (int i = 0; i < listEnd; i++)
 		{
 			var (info, _) = problems[i + _scollOffset];
-			var buttonText = $"{i + _scollOffset}.\t[Day {info.Day}] {info.Name}";
+			var buttonText = $"[Day {info.Day}]\t{info.Name}";
 			var row = i + 7;
 			if (i + _scollOffset == _selectedDay)
 				DrawSelectedButton(buttonText, row, 2, Console.WindowWidth - 4, 1, ConsoleColor.DarkMagenta, ConsoleColor.DarkGray, false, 2);
