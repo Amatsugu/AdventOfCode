@@ -7,12 +7,12 @@ namespace AdventOfCode.Problems.AOC2025.Day12;
 [ProblemInfo(2025, 12, "Christmas Tree Farm")]
 internal class ChristmasTreeFarm : Problem<int, int>
 {
-	private Present[] _presents = [];
+	private PresentShape[] _presents = [];
 	private Tree[] _trees = [];
 
 	public override void CalculatePart1()
 	{
-		throw new NotImplementedException();
+		Part1 = _trees.Count(t => t.CanFitPresents(_presents));
 	}
 
 	public override void CalculatePart2()
@@ -55,7 +55,7 @@ internal class ChristmasTreeFarm : Problem<int, int>
 				return line.Select((c, x) => (c, x: x - 1)).Where(v => v.c == '#').Select(v => new Vec2i(v.x, idx - 1));
 			});
 
-			return new Present(id, [.. points]);
+			return new PresentShape(id, [.. points]);
 		}).ToArray();
 
 
