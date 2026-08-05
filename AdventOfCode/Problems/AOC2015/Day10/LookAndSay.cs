@@ -11,12 +11,12 @@ internal class LookAndSay : Problem<int, int>
 
 	public override void CalculatePart1()
 	{
-		Part1 = Run(40);
+		Part1 = RunV2(40);
 	}
 
 	public override void CalculatePart2()
 	{
-		Part2 = Run(50);
+		Part2 = RunV2(50);
 	}
 
 	public override void LoadInput()
@@ -33,6 +33,38 @@ internal class LookAndSay : Problem<int, int>
 		return value.Length;
 	}
 
+	public int RunV2(int iter)
+	{
+		var value = _input.Select(x => int.Parse(x.ToString())).ToList();
+		for (int i = 0; i < iter; i++)
+			CalculateNext(ref value);
+
+		return value.Count;
+	}
+
+	private static void CalculateNext(ref List<int> input)
+	{
+		var next = new List<int>(input.Count * 2);
+		var curCount = 1;
+		var curChar = input[0];
+		for (int i = 1; i < input.Count; i++)
+		{
+			var c = input[i];
+			if (c != curChar)
+			{
+				next.Add(curCount);
+				next.Add(curChar);
+				curChar = c;
+				curCount = 1;
+				continue;
+			}
+			curCount++;
+		}
+		next.Add(curCount);
+		next.Add(curChar);
+
+		input = next;
+	}
 	private static void CalculateNext(ref StringBuilder input)
 	{
 		var next = new StringBuilder();
